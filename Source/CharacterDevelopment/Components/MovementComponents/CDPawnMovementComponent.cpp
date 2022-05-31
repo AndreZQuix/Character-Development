@@ -25,13 +25,14 @@ void UCDPawnMovementComponent::TickComponent(float DeltaTime, enum ELevelTick Ti
 		FCollisionQueryParams CollisionParams;
 		CollisionParams.AddIgnoredActor(GetOwner());
 
+		bool bWasFalling = bIsFalling;	// cache previous state
 		bIsFalling = !GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint, ECC_Visibility, CollisionParams);
 		if (bIsFalling)	// if pawn is falling..
 		{
 			VerticalVelocity += GetGravityZ() * FVector::UpVector * DeltaTime;	// ..increase velocity
 			Velocity += VerticalVelocity;
 		}
-		else
+		else if(bWasFalling)
 		{
 			VerticalVelocity = FVector::ZeroVector;	// prevent from eternal velocity increasing
 		}
