@@ -19,4 +19,11 @@ class CHARACTERDEVELOPMENT_API UCDPawnMovementComponent : public UPawnMovementCo
 protected:
 	UPROPERTY(EditAnywhere)
 	float MaxSpeed = 1200.0f;
+
+	UPROPERTY(EditAnywhere)
+	bool bEnableGravity;
+
+private:
+	FVector VerticalVelocity = FVector::ZeroVector;
+	bool bIsFalling = false;
 };

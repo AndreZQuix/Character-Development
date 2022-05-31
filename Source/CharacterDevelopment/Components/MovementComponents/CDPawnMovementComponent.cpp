@@ -5,7 +5,7 @@
 
 void UCDPawnMovementComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	if (ShouldSkipUpdate(DeltaTime))
+	if (ShouldSkipUpdate(DeltaTime))	// optimization
 	{
 		return;
 	}
@@ -14,14 +14,35 @@ void UCDPawnMovementComponent::TickComponent(float DeltaTime, enum ELevelTick Ti
 
 	FVector PendingInput = GetPendingInputVector().GetClampedToMaxSize(1.0f);
 	Velocity = PendingInput * MaxSpeed;
-	ConsumeInputVector();
+	ConsumeInputVector();	// adjust velocity (prevent from eternal summing with previous inputs)
+
+	if (bEnableGravity)
+	{
+		FHitResult HitResult;
+		FVector StartPoint = UpdatedComponent->GetComponentLocation();
+		float LineTraceLength = 50.0f + GetGravityZ() * DeltaTime;
+		FVector EndPoint = StartPoint - LineTraceLength * FVector::UpVector;
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(GetOwner());
+
+		bIsFalling = !GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint, ECC_Visibility, CollisionParams);
+		if (bIsFalling)	// if pawn is falling..
+		{
+			VerticalVelocity += GetGravityZ() * FVector::UpVector * DeltaTime;	// ..increase velocity
+			Velocity += VerticalVelocity;
+		}
+		else
+		{
+			VerticalVelocity = FVector::ZeroVector;	// prevent from eternal velocity increasing
+		}
+	}
 
 	FVector Delta = Velocity * DeltaTime;
 	if (!Delta.IsNearlyZero(1e-6f))
 	{
 		FQuat Rot = UpdatedComponent->GetComponentQuat();
 		FHitResult Hit(1.f);
-		SafeMoveUpdatedComponent(Delta, Rot, true, Hit);
+		SafeMoveUpdatedComponent(Delta, Rot, true, Hit);	// surface sliding (from UFloatingPawnMovement)
 
 		if (Hit.IsValidBlockingHit())
 		{
