@@ -24,10 +24,10 @@ protected:
 	class UBoxComponent* BoxComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float TransitionToCameraTime;
+	float TransitionToCameraTime = 1.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float TransitionToPawnTime;
+	float TransitionToPawnTime = 1.0f;
 
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
