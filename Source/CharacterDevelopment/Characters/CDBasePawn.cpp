@@ -26,6 +26,7 @@ void ACDBasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("MoveForward", this, &ACDBasePawn::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ACDBasePawn::MoveRight);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACDBasePawn::Jump);
 }
 
 void ACDBasePawn::MoveForward(float Value)
@@ -42,5 +43,12 @@ void ACDBasePawn::MoveRight(float Value)
 	{
 		AddMovementInput(GetActorRightVector(), Value);
 	}
+}
+
+void ACDBasePawn::Jump()
+{
+	checkf(MovementComponent->IsA<UCDPawnMovementComponent>(), TEXT("Jump can only work with UCDPawnMovementComponent"));
+	UCDPawnMovementComponent* BaseMovement = StaticCast<UCDPawnMovementComponent*>(MovementComponent);
+	BaseMovement->JumpStart();
 }
 

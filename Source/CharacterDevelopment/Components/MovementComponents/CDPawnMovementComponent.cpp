@@ -20,23 +20,26 @@ void UCDPawnMovementComponent::TickComponent(float DeltaTime, enum ELevelTick Ti
 	{
 		FHitResult HitResult;
 		FVector StartPoint = UpdatedComponent->GetComponentLocation();
-		float LineTraceLength = 50.0f + GetGravityZ() * DeltaTime;
-		FVector EndPoint = StartPoint - LineTraceLength * FVector::UpVector;
+		float TraceDepth = 1.0f;
+		float SphereRadius = 50.0f;
+		FVector EndPoint = StartPoint - TraceDepth * FVector::UpVector;
 		FCollisionQueryParams CollisionParams;
 		CollisionParams.AddIgnoredActor(GetOwner());
 
 		bool bWasFalling = bIsFalling;	// cache previous state
-		bIsFalling = !GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint, ECC_Visibility, CollisionParams);
+		FCollisionShape Sphere = FCollisionShape::MakeSphere(SphereRadius);
+		bIsFalling = !GetWorld()->SweepSingleByChannel(HitResult, StartPoint, EndPoint, FQuat::Identity, ECC_Visibility, Sphere, CollisionParams);
 		if (bIsFalling)	// if pawn is falling..
 		{
 			VerticalVelocity += GetGravityZ() * FVector::UpVector * DeltaTime;	// ..increase velocity
-			Velocity += VerticalVelocity;
 		}
 		else if(bWasFalling)
 		{
 			VerticalVelocity = FVector::ZeroVector;	// prevent from eternal velocity increasing
 		}
 	}
+
+	Velocity += VerticalVelocity;
 
 	FVector Delta = Velocity * DeltaTime;
 	if (!Delta.IsNearlyZero(1e-6f))
@@ -52,4 +55,12 @@ void UCDPawnMovementComponent::TickComponent(float DeltaTime, enum ELevelTick Ti
 		}
 	}
 	UpdateComponentVelocity();
+}
+
+void UCDPawnMovementComponent::JumpStart()
+{
+	if (!bIsFalling)
+	{
+		VerticalVelocity = InitialJumpVelocity * FVector::UpVector;
+	}
 }
