@@ -5,6 +5,8 @@
 #include "Components/SphereComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "../Components/MovementComponents/CDPawnMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Camera/PlayerCameraManager.h"
 
 // Sets default values
 ACDBasePawn::ACDBasePawn()
@@ -33,7 +35,7 @@ void ACDBasePawn::MoveForward(float Value)
 {
 	if (Value != 0.0f)
 	{
-		AddMovementInput(GetActorForwardVector(), Value);
+		AddMovementInput(CurrentViewActor->GetActorForwardVector(), Value);
 	}
 }
 
@@ -41,7 +43,7 @@ void ACDBasePawn::MoveRight(float Value)
 {
 	if (Value != 0.0f)
 	{
-		AddMovementInput(GetActorRightVector(), Value);
+		AddMovementInput(CurrentViewActor->GetActorRightVector(), Value);
 	}
 }
 
@@ -50,5 +52,18 @@ void ACDBasePawn::Jump()
 	checkf(MovementComponent->IsA<UCDPawnMovementComponent>(), TEXT("Jump can only work with UCDPawnMovementComponent"));
 	UCDPawnMovementComponent* BaseMovement = StaticCast<UCDPawnMovementComponent*>(MovementComponent);
 	BaseMovement->JumpStart();
+}
+
+void ACDBasePawn::BeginPlay()
+{
+	Super::BeginPlay();
+	APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	CurrentViewActor = CameraManager->GetViewTarget();
+	CameraManager->OnBlendComplete().AddUFunction(this, FName("OnBlendComplete"));
+}
+
+void ACDBasePawn::OnBlendComplete()
+{
+	CurrentViewActor = GetController()->GetViewTarget();
 }
 
