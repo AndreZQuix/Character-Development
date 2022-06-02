@@ -64,3 +64,8 @@ void UCDPawnMovementComponent::JumpStart()
 		VerticalVelocity = InitialJumpVelocity * FVector::UpVector;
 	}
 }
+
+bool UCDPawnMovementComponent::IsFalling() const
+{
+	return bIsFalling;
+}

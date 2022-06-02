@@ -29,12 +29,21 @@ public:
 
 	void Jump();
 
+	UFUNCTION(BlueprintCallable)
+	float GetInputForward() const { return InputForward;}
+
+	UFUNCTION(BlueprintCallable)
+	float GetInputRight() const { return InputRight; }
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	UFUNCTION()
 	void OnBlendComplete();
+
+	float InputForward = 0.0f;
+	float InputRight = 0.0f;
 
 	AActor* CurrentViewActor;
 };

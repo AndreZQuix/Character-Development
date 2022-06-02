@@ -33,6 +33,7 @@ void ACDBasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 void ACDBasePawn::MoveForward(float Value)
 {
+	InputForward = Value;
 	if (Value != 0.0f)
 	{
 		AddMovementInput(CurrentViewActor->GetActorForwardVector(), Value);
@@ -41,6 +42,7 @@ void ACDBasePawn::MoveForward(float Value)
 
 void ACDBasePawn::MoveRight(float Value)
 {
+	InputRight = Value;
 	if (Value != 0.0f)
 	{
 		AddMovementInput(CurrentViewActor->GetActorRightVector(), Value);
