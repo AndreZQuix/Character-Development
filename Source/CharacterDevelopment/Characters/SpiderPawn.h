@@ -47,10 +47,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spider bot|IK settings")
 	FName LeftRearFootSocketName;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spider bot|IK settings", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float IKTraceExtendDistance = 30.0f;
+
 private:
+	float GetIKOffsetForASocket(const FName& SocketName);
+
 	float IKRightFrontFootOffset = 0.0f;
 	float IKRightRearFootOffset = 0.0f;
 	float IKLeftFrontFootOffset = 0.0f;
 	float IKLeftRearFootOffset = 0.0f;
 
+	float IKTraceDistance = 0.0f;
+	float IKScale = 1.0f;
 };

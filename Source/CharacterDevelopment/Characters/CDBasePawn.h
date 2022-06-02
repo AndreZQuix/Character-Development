@@ -59,5 +59,5 @@ private:
 	float InputForward = 0.0f;
 	float InputRight = 0.0f;
 
-	AActor* CurrentViewActor;
+	AActor* CurrentViewActor; // for correct character controlling from second camera
 };
