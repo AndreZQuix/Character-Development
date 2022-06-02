@@ -15,7 +15,7 @@
 ACDBasePawn::ACDBasePawn()
 {
 	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
-	CollisionComponent->SetSphereRadius(50.0f);
+	CollisionComponent->SetSphereRadius(CollisionSphereRadius);
 	CollisionComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	RootComponent = CollisionComponent;
 
