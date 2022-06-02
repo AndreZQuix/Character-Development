@@ -50,6 +50,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spider bot|IK settings", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float IKTraceExtendDistance = 30.0f;
 
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Spider bot|IK settings", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float IKInterpSpeed = 20.0f;
+
 private:
 	float GetIKOffsetForASocket(const FName& SocketName);
 

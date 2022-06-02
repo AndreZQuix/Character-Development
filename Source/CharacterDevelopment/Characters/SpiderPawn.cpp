@@ -17,10 +17,10 @@ ASpiderPawn::ASpiderPawn()
 void ASpiderPawn::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	IKRightFrontFootOffset = GetIKOffsetForASocket(RightFrontFootSocketName);
-	IKRightRearFootOffset = GetIKOffsetForASocket(RightRearFootSocketName);
-	IKLeftFrontFootOffset = GetIKOffsetForASocket(LeftFrontFootSocketName);
-	IKLeftRearFootOffset = GetIKOffsetForASocket(LeftRearFootSocketName);
+	IKRightFrontFootOffset = FMath::FInterpTo(IKRightFrontFootOffset, GetIKOffsetForASocket(RightFrontFootSocketName), DeltaSeconds, IKInterpSpeed); // to avoid jitter
+	IKRightRearFootOffset = FMath::FInterpTo(IKRightRearFootOffset, GetIKOffsetForASocket(RightRearFootSocketName), DeltaSeconds, IKInterpSpeed);
+	IKLeftFrontFootOffset = FMath::FInterpTo(IKLeftFrontFootOffset, GetIKOffsetForASocket(LeftFrontFootSocketName), DeltaSeconds, IKInterpSpeed);
+	IKLeftRearFootOffset = FMath::FInterpTo(IKLeftRearFootOffset, GetIKOffsetForASocket(LeftRearFootSocketName), DeltaSeconds, IKInterpSpeed);
 
 }
 
