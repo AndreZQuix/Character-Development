@@ -3,6 +3,9 @@
 
 #include "CDBasePawn.h"
 #include "Components/SphereComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Components/ArrowComponent.h"
+#include "Camera/CameraComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "../Components/MovementComponents/CDPawnMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -18,6 +21,18 @@ ACDBasePawn::ACDBasePawn()
 
 	MovementComponent = CreateDefaultSubobject<UPawnMovementComponent, UCDPawnMovementComponent>(TEXT("MovementComponent"));
 	MovementComponent->SetUpdatedComponent(CollisionComponent);
+
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArmComponent->bUsePawnControlRotation = 1;
+	SpringArmComponent->SetupAttachment(RootComponent);
+
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	CameraComponent->SetupAttachment(SpringArmComponent);
+
+#if	WITH_EDITORONLY_DATA
+	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
+	ArrowComponent->SetupAttachment(RootComponent);
+#endif
 }
 
 // Called to bind functionality to input

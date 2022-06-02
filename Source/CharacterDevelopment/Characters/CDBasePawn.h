@@ -38,6 +38,17 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Base pawn")
+	class USpringArmComponent* SpringArmComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Base pawn")
+	class UCameraComponent* CameraComponent;
+
+#if	WITH_EDITORONLY_DATA
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Base pawn")
+	class UArrowComponent* ArrowComponent;
+#endif
+
 private:
 	UFUNCTION()
 	void OnBlendComplete();
