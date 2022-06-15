@@ -54,6 +54,3 @@ void ACDPlayerCharacter::LookUp(float Value)
 	AddControllerPitchInput(Value);
 }
 
-void ACDPlayerCharacter::Jump()
-{
-}

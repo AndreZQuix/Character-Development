@@ -21,7 +21,6 @@ public:
 	virtual void MoveRight(float Value) override;
 	virtual void Turn(float Value) override;
 	virtual void LookUp(float Value) override;
-	virtual void Jump() override;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Camera")
