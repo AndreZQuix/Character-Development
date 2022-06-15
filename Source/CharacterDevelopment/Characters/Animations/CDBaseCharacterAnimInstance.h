@@ -13,5 +13,18 @@ UCLASS()
 class CHARACTERDEVELOPMENT_API UCDBaseCharacterAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void NativeBeginPlay() override;
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character animation")
+	float Speed = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character animation")
+	bool bIsFalling = false;
+
+private:
+	TWeakObjectPtr<class ACDBaseCharacter> CachedBaseCharacter;
 };

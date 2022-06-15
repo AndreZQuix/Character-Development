@@ -56,5 +56,4 @@ void ACDPlayerCharacter::LookUp(float Value)
 
 void ACDPlayerCharacter::Jump()
 {
-
 }
