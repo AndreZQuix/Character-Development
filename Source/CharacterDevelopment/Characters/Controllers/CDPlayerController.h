@@ -14,4 +14,18 @@ class CHARACTERDEVELOPMENT_API ACDPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void SetPawn(APawn* InPawn) override;
+
+protected:
+	virtual void SetupInputComponent() override;
+
+private:
+	TSoftObjectPtr<class ACDBaseCharacter> CachedBaseCharacter;
+	
+	void MoveForward(float Value);
+	void MoveRight(float Value);
+	void Turn(float Value);
+	void LookUp(float Value);
+	void Jump();
 };
