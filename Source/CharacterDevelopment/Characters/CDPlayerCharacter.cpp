@@ -4,27 +4,33 @@
 #include "CDPlayerCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 ACDPlayerCharacter::ACDPlayerCharacter()
 {
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring arm"));
 	SpringArmComponent->SetupAttachment(RootComponent);
+	SpringArmComponent->bUsePawnControlRotation = true;
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
+	CameraComponent->bUsePawnControlRotation = false;
+
+	GetCharacterMovement()->bOrientRotationToMovement = 1;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
 }
 
 void ACDPlayerCharacter::MoveForward(float Value)
 {
 	if (!FMath::IsNearlyZero(Value, 1e-6f))
 	{
-<<<<<<< HEAD
 		FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
 		FVector ForwardVector = YawRotator.RotateVector(FVector::ForwardVector);
 		AddMovementInput(ForwardVector, Value);
-=======
-		AddMovementInput(GetActorForwardVector(), Value);
->>>>>>> f93cd3d38fac4ed18b5ff02ae33a7226a5eb4e47
 	}
 }
 
@@ -32,13 +38,9 @@ void ACDPlayerCharacter::MoveRight(float Value)
 {
 	if (!FMath::IsNearlyZero(Value, 1e-6f))
 	{
-<<<<<<< HEAD
 		FRotator YawRotator(0.0f, GetControlRotation().Yaw, 0.0f);
 		FVector RightdVector = YawRotator.RotateVector(FVector::RightVector);
 		AddMovementInput(RightdVector, Value);
-=======
-		AddMovementInput(GetActorRightVector(), Value);
->>>>>>> f93cd3d38fac4ed18b5ff02ae33a7226a5eb4e47
 	}
 }
 
