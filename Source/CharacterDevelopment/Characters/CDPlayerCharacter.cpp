@@ -54,3 +54,12 @@ void ACDPlayerCharacter::LookUp(float Value)
 	AddControllerPitchInput(Value);
 }
 
+void ACDPlayerCharacter::TurnAtRate(float Value)
+{
+	AddControllerYawInput(Value * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+}
+
+void ACDPlayerCharacter::LookUpAtRate(float Value)
+{
+	AddControllerPitchInput(Value * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}

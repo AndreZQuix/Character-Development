@@ -17,6 +17,8 @@ void ACDPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("MoveRight", this, &ACDPlayerController::MoveRight);
 	InputComponent->BindAxis("Turn", this, &ACDPlayerController::Turn);
 	InputComponent->BindAxis("LookUp", this, &ACDPlayerController::LookUp);
+	InputComponent->BindAxis("TurnAtRate", this, &ACDPlayerController::TurnAtRate);
+	InputComponent->BindAxis("LookUpAtRate", this, &ACDPlayerController::LookUpAtRate);
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACDPlayerController::Jump);
 }
 
@@ -44,11 +46,27 @@ void ACDPlayerController::Turn(float Value)
 	}
 }
 
+void ACDPlayerController::TurnAtRate(float Value)
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->TurnAtRate(Value);
+	}
+}
+
 void ACDPlayerController::LookUp(float Value)
 {
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->LookUp(Value);
+	}
+}
+
+void ACDPlayerController::LookUpAtRate(float Value)
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->LookUpAtRate(Value);
 	}
 }
 

@@ -27,5 +27,7 @@ private:
 	void MoveRight(float Value);
 	void Turn(float Value);
 	void LookUp(float Value);
+	void TurnAtRate(float Value);
+	void LookUpAtRate(float Value);
 	void Jump();
 };

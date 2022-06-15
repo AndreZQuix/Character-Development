@@ -16,4 +16,13 @@ public:
 	virtual void MoveRight(float Value) {};
 	virtual void Turn(float Value) {};
 	virtual void LookUp(float Value) {};
+	virtual void TurnAtRate(float Value) {};
+	virtual void LookUpAtRate(float Value) {};
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Control")
+	float BaseTurnRate = 45.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Control")
+	float BaseLookUpRate = 45.0f;
 };
