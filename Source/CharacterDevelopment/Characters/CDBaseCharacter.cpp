@@ -2,4 +2,16 @@
 
 
 #include "CDBaseCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
+void ACDBaseCharacter::ChangeCrouchState()
+{
+	if (GetCharacterMovement()->IsCrouching())
+	{
+		UnCrouch();
+	}
+	else
+	{
+		Crouch();
+	}
+}

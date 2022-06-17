@@ -19,6 +19,8 @@ public:
 	virtual void TurnAtRate(float Value) {};
 	virtual void LookUpAtRate(float Value) {};
 
+	virtual void ChangeCrouchState();
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Control")
 	float BaseTurnRate = 45.0f;

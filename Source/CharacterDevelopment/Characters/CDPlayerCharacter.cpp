@@ -63,3 +63,28 @@ void ACDPlayerCharacter::LookUpAtRate(float Value)
 {
 	AddControllerPitchInput(Value * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
+
+void ACDPlayerCharacter::OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
+{
+	Super::OnStartCrouch(HalfHeightAdjust, ScaledHalfHeightAdjust);
+	SpringArmComponent->TargetOffset += FVector(0.0f, 0.0f, HalfHeightAdjust);
+}
+
+void ACDPlayerCharacter::OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
+{
+	Super::OnEndCrouch(HalfHeightAdjust, ScaledHalfHeightAdjust);
+	SpringArmComponent->TargetOffset -= FVector(0.0f, 0.0f, HalfHeightAdjust);
+}
+
+bool ACDPlayerCharacter::CanJumpInternal_Implementation() const
+{
+	return bIsCrouched || Super::CanJumpInternal_Implementation();
+}
+
+void ACDPlayerCharacter::OnJumped_Implementation()
+{
+	if (bIsCrouched)
+	{
+		UnCrouch();
+	}
+}

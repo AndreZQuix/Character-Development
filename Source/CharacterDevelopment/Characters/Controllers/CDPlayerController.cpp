@@ -20,6 +20,7 @@ void ACDPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("TurnAtRate", this, &ACDPlayerController::TurnAtRate);
 	InputComponent->BindAxis("LookUpAtRate", this, &ACDPlayerController::LookUpAtRate);
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACDPlayerController::Jump);
+	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ACDPlayerController::ChangeCrouchState);
 }
 
 void ACDPlayerController::MoveForward(float Value)
@@ -75,5 +76,13 @@ void ACDPlayerController::Jump()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->Jump();
+	}
+}
+
+void ACDPlayerController::ChangeCrouchState()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->ChangeCrouchState();
 	}
 }
