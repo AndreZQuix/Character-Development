@@ -8,7 +8,8 @@
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
 
-ACDPlayerCharacter::ACDPlayerCharacter()
+ACDPlayerCharacter::ACDPlayerCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;

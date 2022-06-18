@@ -15,7 +15,7 @@ class CHARACTERDEVELOPMENT_API ACDPlayerCharacter : public ACDBaseCharacter
 	GENERATED_BODY()
 
 public:
-	ACDPlayerCharacter();
+	ACDPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
 	virtual void MoveForward(float Value) override;
 	virtual void MoveRight(float Value) override;

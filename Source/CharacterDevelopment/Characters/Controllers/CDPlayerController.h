@@ -31,4 +31,6 @@ private:
 	void LookUpAtRate(float Value);
 	void ChangeCrouchState();
 	void Jump();
+	void StartSprint();
+	void StopSprint();
 };

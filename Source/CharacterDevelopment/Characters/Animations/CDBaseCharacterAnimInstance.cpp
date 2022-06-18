@@ -2,8 +2,8 @@
 
 
 #include "CDBaseCharacterAnimInstance.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "../CDBaseCharacter.h"
+#include "../../Components/MovementComponents/CDBaseCharacterMovementComponent.h"
 
 void UCDBaseCharacterAnimInstance::NativeBeginPlay()
 {
@@ -20,8 +20,9 @@ void UCDBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		return;
 	}
 
-	UCharacterMovementComponent* CharacterMovement = CachedBaseCharacter->GetCharacterMovement();
+	UCDBaseCharacterMovementComponent* CharacterMovement = CachedBaseCharacter->GetBaseCharacterMovementComponent();
 	Speed = CharacterMovement->Velocity.Size();
 	bIsFalling = CharacterMovement->IsFalling();
 	bIsCrouching = CharacterMovement->IsCrouching();
+	bIsSprinting = CharacterMovement->IsSprinting();
 }
