@@ -43,11 +43,13 @@ protected:
 
 	virtual bool CanSprint();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Character | Movement")
+	UFUNCTION(BlueprintNativeEvent, Category = "Character | Movement")
 	void OnSprintStart();
+	virtual void OnSprintStart_Implementation();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Character | Movement")
+	UFUNCTION(BlueprintNativeEvent, Category = "Character | Movement")
 	void OnSprintEnd();
+	virtual void OnSprintEnd_Implementation();
 
 	UCDBaseCharacterMovementComponent* CDBaseCharacterMovementComponent;
 

@@ -114,3 +114,13 @@ void ACDPlayerCharacter::OnJumped_Implementation()
 		UnCrouch();
 	}
 }
+
+void ACDPlayerCharacter::OnSprintStart_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ACDPlayerCharacter::OnSprintStart_Implementation"));
+}
+
+void ACDPlayerCharacter::OnSprintEnd_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("ACDPlayerCharacter::OnSprintEnd_Implementation"));
+}

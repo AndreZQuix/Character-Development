@@ -23,7 +23,7 @@ void ACDBaseCharacter::ChangeCrouchState()
 	{
 		UnCrouch();
 	}
-	else
+	else if(!CDBaseCharacterMovementComponent->IsSprinting())
 	{
 		Crouch();
 	}
@@ -61,4 +61,14 @@ void ACDBaseCharacter::TryChangeSprintState()
 		CDBaseCharacterMovementComponent->StopSprint();
 		OnSprintEnd();
 	}
+}
+
+void ACDBaseCharacter::OnSprintStart_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnSprintStart_Implementation"));
+}
+
+void ACDBaseCharacter::OnSprintEnd_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnSprintEnd_Implementation"));
 }

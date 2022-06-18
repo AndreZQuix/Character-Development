@@ -29,6 +29,9 @@ public:
 
 	virtual bool CanJumpInternal_Implementation() const override;
 	virtual void OnJumped_Implementation() override;
+
+	void OnSprintStart_Implementation() override;
+	void OnSprintEnd_Implementation() override;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Camera")
