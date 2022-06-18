@@ -24,7 +24,7 @@ public:
 	virtual void TurnAtRate(float Value) override;
 	virtual void LookUpAtRate(float Value) override;
 
-	virtual void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+	virtual void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;	// adjust camera socket
 	virtual void OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
 
 	virtual bool CanJumpInternal_Implementation() const override;
