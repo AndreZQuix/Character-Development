@@ -5,8 +5,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "DrawDebugHelpers.h"
 
 ACDPlayerCharacter::ACDPlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -25,6 +23,11 @@ ACDPlayerCharacter::ACDPlayerCharacter(const FObjectInitializer& ObjectInitializ
 
 	GetCharacterMovement()->bOrientRotationToMovement = 1;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
+}
+
+void ACDPlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void ACDPlayerCharacter::MoveForward(float Value)
@@ -81,25 +84,7 @@ void ACDPlayerCharacter::OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHei
 
 bool ACDPlayerCharacter::CanJumpInternal_Implementation() const
 {
-	ACharacter* DefaultCharacter = GetClass()->GetDefaultObject<ACharacter>();	// get standing capsule collision to calculate it's half height
-	const FCollisionShape StandingCapsuleShape = DefaultCharacter->GetCapsuleComponent()->GetCollisionShape();
-	float CapsuleRadius, CapsuleHalfHeight;
-	GetCapsuleComponent()->GetScaledCapsuleSize(CapsuleRadius, CapsuleHalfHeight);
-
-	const FVector CharacterLocation = GetCharacterMovement()->UpdatedComponent->GetComponentLocation();
-	const float SweepInflation = KINDA_SMALL_NUMBER * 10.0f;
-	float MinFloorDistHalf = UCharacterMovementComponent::MIN_FLOOR_DIST / 2.0f;
-	float NewZ = CharacterLocation.Z - CapsuleHalfHeight + StandingCapsuleShape.Capsule.HalfHeight;	// get new Z at the point of character location with an error
-	NewZ += SweepInflation + MinFloorDistHalf;
-
-	const FVector NewLocation = FVector(CharacterLocation.X, CharacterLocation.Y, NewZ);
-	FCollisionQueryParams CapsuleParams(SCENE_QUERY_STAT(CrouchTrace), false, this);
-	FCollisionResponseParams ResponseParam;
-	ECollisionChannel CollisionChannel = GetCharacterMovement()->UpdatedComponent->GetCollisionObjectType();
-
-	bool bEncroached = GetWorld()->OverlapBlockingTestByChannel(NewLocation, FQuat::Identity, CollisionChannel, StandingCapsuleShape, CapsuleParams, ResponseParam);	// raycast test if ray overlaps with object on standing capsule height
-
-	if (!bEncroached && bIsCrouched)
+	if (CanStandUp() && bIsCrouched)
 	{
 		return true;
 	}

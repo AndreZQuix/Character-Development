@@ -17,6 +17,8 @@ class CHARACTERDEVELOPMENT_API ACDPlayerCharacter : public ACDBaseCharacter
 public:
 	ACDPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
+	virtual void BeginPlay() override;
+
 	virtual void MoveForward(float Value) override;
 	virtual void MoveRight(float Value) override;
 	virtual void Turn(float Value) override;
