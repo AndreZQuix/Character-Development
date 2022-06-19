@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CDBaseCharacter.h"
+#include "Components/TimelineComponent.h"
 #include "CDPlayerCharacter.generated.h"
 
 /**
@@ -18,6 +19,7 @@ public:
 	ACDPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 	virtual void MoveForward(float Value) override;
 	virtual void MoveRight(float Value) override;
@@ -34,6 +36,12 @@ public:
 
 	void OnSprintStart_Implementation() override;
 	void OnSprintEnd_Implementation() override;
+
+	UPROPERTY(EditAnywhere, Category = "Character | Camera")
+	UCurveFloat* SpringArmSprintCurve;
+
+	UPROPERTY(EditAnywhere, Category = "Character | Camera", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float SpringArmLength = 400.0f;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Camera")
@@ -41,4 +49,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Camera")
 	class USpringArmComponent* SpringArmComponent;
+
+private:
+	FTimeline SpringArmTimeline;
+	float DefaultSpringArmLength;
+
+	void HandleSpringArm(float Value); // timeline function
 };

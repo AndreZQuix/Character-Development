@@ -16,6 +16,7 @@ ACDPlayerCharacter::ACDPlayerCharacter(const FObjectInitializer& ObjectInitializ
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring arm"));
 	SpringArmComponent->SetupAttachment(RootComponent);
 	SpringArmComponent->bUsePawnControlRotation = true;
+	DefaultSpringArmLength = SpringArmComponent->TargetArmLength;
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
@@ -28,6 +29,18 @@ ACDPlayerCharacter::ACDPlayerCharacter(const FObjectInitializer& ObjectInitializ
 void ACDPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	if (SpringArmSprintCurve)
+	{
+		FOnTimelineFloatStatic SprintProgressFunction;	// for camera adjusting
+		SprintProgressFunction.BindUObject(this, &ACDPlayerCharacter::HandleSpringArm);
+		SpringArmTimeline.AddInterpFloat(SpringArmSprintCurve, SprintProgressFunction);
+	}
+}
+
+void ACDPlayerCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	SpringArmTimeline.TickTimeline(DeltaTime);
 }
 
 void ACDPlayerCharacter::MoveForward(float Value)
@@ -102,10 +115,16 @@ void ACDPlayerCharacter::OnJumped_Implementation()
 
 void ACDPlayerCharacter::OnSprintStart_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ACDPlayerCharacter::OnSprintStart_Implementation"));
+	SpringArmTimeline.PlayFromStart();
 }
 
 void ACDPlayerCharacter::OnSprintEnd_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("ACDPlayerCharacter::OnSprintEnd_Implementation"));
+	SpringArmTimeline.Reverse();
+}
+
+void ACDPlayerCharacter::HandleSpringArm(float Value)
+{
+	float Result = FMath::Lerp(DefaultSpringArmLength, SpringArmLength, Value);
+	SpringArmComponent->TargetArmLength = Result;
 }
