@@ -70,9 +70,6 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Character | IK settings", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float IKInterpSpeed = 20.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | IK settings", meta = (ClampMin = 0.0f, UIMin = 0.0f))
-	float IKTraceExtendDistance = 30.0f;
-
 private:
 	bool bIsSprintRequested = false;
 
@@ -87,5 +84,4 @@ private:
 	float IKPelvisOffset = 0.0f;
 
 	float IKTraceDistance = 50.0f;
-	float IKScale = 1.0f;
 };

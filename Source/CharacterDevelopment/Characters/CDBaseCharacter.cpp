@@ -11,9 +11,6 @@ ACDBaseCharacter::ACDBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCDBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	CDBaseCharacterMovementComponent = StaticCast<UCDBaseCharacterMovementComponent*>(GetCharacterMovement());
-
-	//IKScale = GetActorScale3D().Z;
-	//IKTraceDistance *= IKScale;
 }
 
 void ACDBaseCharacter::Tick(float DeltaTime)
@@ -76,7 +73,7 @@ float ACDBaseCharacter::GetIKOffsetForASocket(const FName& SocketName)
 	float Result = 0.0f;
 	float CapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 	FVector SocketLocation = GetMesh()->GetSocketLocation(SocketName);
-	FVector TraceStart(SocketLocation.X + 5.0f, SocketLocation.Y - 5.0f, GetActorLocation().Z + 5.0f);
+	FVector TraceStart(SocketLocation.X, SocketLocation.Y, GetActorLocation().Z + 5.0f);
 	FVector TraceEnd = TraceStart - (CapsuleHalfHeight + IKTraceDistance) * FVector::UpVector;
 
 	FHitResult HitResult;
