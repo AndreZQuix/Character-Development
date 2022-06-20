@@ -1,21 +1,33 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "CDBaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Components/MovementComponents/CDBaseCharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 ACDBaseCharacter::ACDBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCDBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
-	CDBaseCharacterMovementComponent = StaticCast< UCDBaseCharacterMovementComponent*>(GetCharacterMovement());
+	CDBaseCharacterMovementComponent = StaticCast<UCDBaseCharacterMovementComponent*>(GetCharacterMovement());
+
+	//IKScale = GetActorScale3D().Z;
+	//IKTraceDistance *= IKScale;
 }
 
 void ACDBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	UpdateIKSettings(DeltaTime);
 	TryChangeSprintState();
+}
+
+void ACDBaseCharacter::UpdateIKSettings(float DeltaTime)
+{
+	IKLeftFootOffset = FMath::FInterpTo(IKLeftFootOffset, GetIKOffsetForASocket(LeftFootSocketName), DeltaTime, IKInterpSpeed);
+	IKRightFootOffset = FMath::FInterpTo(IKRightFootOffset, GetIKOffsetForASocket(RightFootSocketName), DeltaTime, IKInterpSpeed);
+	IKPelvisOffset = FMath::FInterpTo(IKPelvisOffset, GetIKPelvisOffset(), DeltaTime, IKInterpSpeed);
 }
 
 void ACDBaseCharacter::ChangeCrouchState()
@@ -57,6 +69,30 @@ void ACDBaseCharacter::TryChangeSprintState()
 		CDBaseCharacterMovementComponent->StopSprint();
 		OnSprintEnd();
 	}
+}
+
+float ACDBaseCharacter::GetIKOffsetForASocket(const FName& SocketName)
+{
+	float Result = 0.0f;
+	float CapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	FVector SocketLocation = GetMesh()->GetSocketLocation(SocketName);
+	FVector TraceStart(SocketLocation.X + 5.0f, SocketLocation.Y - 5.0f, GetActorLocation().Z + 5.0f);
+	FVector TraceEnd = TraceStart - (CapsuleHalfHeight + IKTraceDistance) * FVector::UpVector;
+
+	FHitResult HitResult;
+	ETraceTypeQuery TraceType = UEngineTypes::ConvertToTraceType(ECC_Visibility);
+	const FVector FootSizeBox = FVector(2.5f, 15.0f, 6.0f);
+	if (UKismetSystemLibrary::BoxTraceSingle(GetWorld(), TraceStart, TraceEnd, FootSizeBox, GetMesh()->GetSocketRotation(SocketName), TraceType, true, TArray<AActor*>(), EDrawDebugTrace::ForOneFrame, HitResult, true)) // shape cast
+	{
+		Result = TraceStart.Z - CapsuleHalfHeight - HitResult.Location.Z;
+	}
+
+	return Result;
+}
+
+float ACDBaseCharacter::GetIKPelvisOffset()
+{
+	return -FMath::Abs(IKRightFootOffset - IKLeftFootOffset); // if character can't reach the surface with his leg
 }
 
 bool ACDBaseCharacter::CanStandUp() const

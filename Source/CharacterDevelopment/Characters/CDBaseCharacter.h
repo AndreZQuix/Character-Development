@@ -31,6 +31,14 @@ public:
 
 	FORCEINLINE UCDBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() { return CDBaseCharacterMovementComponent; }
 
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE float GetIKLeftFootOffset() const { return IKLeftFootOffset; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE float GetIKRightFootOffset() const { return IKRightFootOffset; }
+
+	float GetIKPelvisOffset();
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Control")
 	float BaseTurnRate = 45.0f;
@@ -53,8 +61,31 @@ protected:
 
 	UCDBaseCharacterMovementComponent* CDBaseCharacterMovementComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | IK settings")
+	FName LeftFootSocketName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | IK settings")
+	FName RightFootSocketName;
+
+	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Character | IK settings", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float IKInterpSpeed = 20.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | IK settings", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float IKTraceExtendDistance = 30.0f;
+
 private:
 	bool bIsSprintRequested = false;
 
 	void TryChangeSprintState();
+
+	float GetIKOffsetForASocket(const FName& SocketName);
+
+	void UpdateIKSettings(float DeltaTime);
+
+	float IKLeftFootOffset = 0.0f;
+	float IKRightFootOffset = 0.0f;
+	float IKPelvisOffset = 0.0f;
+
+	float IKTraceDistance = 50.0f;
+	float IKScale = 1.0f;
 };

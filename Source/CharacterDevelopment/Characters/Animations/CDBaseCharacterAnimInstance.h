@@ -31,6 +31,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character animation")
 	bool bIsSprinting = false;
 
+	UPROPERTY(EditAnywhere, Transient, BlueprintReadOnly, Category = "Character animation | IK Settings")
+	FVector LeftFootEffectorLocation = FVector::ZeroVector;
+
+	UPROPERTY(EditAnywhere, Transient, BlueprintReadOnly, Category = "Character animation | IK Settings")
+	FVector RightFootEffectorLocation = FVector::ZeroVector;
+
+	UPROPERTY(EditAnywhere, Transient, BlueprintReadOnly, Category = "Character animation | IK Settings")
+	FVector PelvisEffectorLocation = FVector::ZeroVector;
+
 private:
 	TWeakObjectPtr<class ACDBaseCharacter> CachedBaseCharacter;
 };
