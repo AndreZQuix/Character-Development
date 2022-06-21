@@ -78,11 +78,17 @@ float ACDBaseCharacter::GetIKOffsetForASocket(const FName& SocketName)
 
 	FHitResult HitResult;
 	ETraceTypeQuery TraceType = UEngineTypes::ConvertToTraceType(ECC_Visibility);
-	const FVector FootSizeBox = FVector(2.5f, 15.0f, 6.0f);
-	if (UKismetSystemLibrary::BoxTraceSingle(GetWorld(), TraceStart, TraceEnd, FootSizeBox, GetMesh()->GetSocketRotation(SocketName), TraceType, true, TArray<AActor*>(), EDrawDebugTrace::ForOneFrame, HitResult, true)) // shape cast
+
+	if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), TraceStart, TraceEnd, TraceType, true, TArray<AActor*>(), EDrawDebugTrace::ForOneFrame, HitResult, true))
 	{
 		Result = TraceStart.Z - CapsuleHalfHeight - HitResult.Location.Z;
 	}
+
+	//const FVector FootSizeBox = FVector(2.5f, 15.0f, 6.0f);
+	//if (UKismetSystemLibrary::BoxTraceSingle(GetWorld(), TraceStart, TraceEnd, FootSizeBox, GetMesh()->GetSocketRotation(SocketName), TraceType, true, TArray<AActor*>(), EDrawDebugTrace::ForOneFrame, HitResult, true)) // shape cast
+	//{
+	//	Result = TraceStart.Z - CapsuleHalfHeight - HitResult.Location.Z;
+	//}
 
 	return Result;
 }
