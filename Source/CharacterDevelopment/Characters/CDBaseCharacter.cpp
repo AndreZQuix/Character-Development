@@ -11,6 +11,13 @@ ACDBaseCharacter::ACDBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCDBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	CDBaseCharacterMovementComponent = StaticCast<UCDBaseCharacterMovementComponent*>(GetCharacterMovement());
+	CDBaseCharacterMovementComponent->bCanWalkOffLedgesWhenCrouching = 1;
+}
+
+void ACDBaseCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	CurrentStamina = MaxStamina;
 }
 
 void ACDBaseCharacter::Tick(float DeltaTime)
@@ -18,6 +25,7 @@ void ACDBaseCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	UpdateIKSettings(DeltaTime);
 	TryChangeSprintState();
+	UpdateStamina(DeltaTime);
 }
 
 void ACDBaseCharacter::UpdateIKSettings(float DeltaTime)
@@ -55,7 +63,7 @@ void ACDBaseCharacter::StopSprint()
 
 void ACDBaseCharacter::TryChangeSprintState()
 {
-	if (bIsSprintRequested && !CDBaseCharacterMovementComponent->IsSprinting() && CanStandUp())
+	if (bIsSprintRequested && !CDBaseCharacterMovementComponent->IsOutOfStamina() && !CDBaseCharacterMovementComponent->IsSprinting() && CanStandUp())
 	{
 		CDBaseCharacterMovementComponent->StartSprint();
 		OnSprintStart();
@@ -65,6 +73,40 @@ void ACDBaseCharacter::TryChangeSprintState()
 	{
 		CDBaseCharacterMovementComponent->StopSprint();
 		OnSprintEnd();
+	}
+}
+
+void ACDBaseCharacter::UpdateStamina(float DeltaTime)
+{
+	if (CDBaseCharacterMovementComponent->IsSprinting())
+	{
+		CurrentStamina -= SprintStaminaConsumptionVelocity * DeltaTime;	// consume stamina
+		CurrentStamina = FMath::Clamp(CurrentStamina, 0.0f, MaxStamina);
+	}
+	else
+	{
+		CurrentStamina += StaminaRestoreVelocity * DeltaTime;	// restore stamina
+		CurrentStamina = FMath::Clamp(CurrentStamina, 0.0f, MaxStamina);
+	}
+
+	if (CurrentStamina == 0.0f) // character is exhausted
+	{
+		CDBaseCharacterMovementComponent->SetOutOfStamina(true);
+		StopSprint();
+	}
+
+	if (CDBaseCharacterMovementComponent->IsOutOfStamina() && CurrentStamina == MaxStamina) // character stamina is fully restored
+	{
+		CDBaseCharacterMovementComponent->SetOutOfStamina(false);
+	}
+
+	if (CurrentStamina < MaxStamina)	// simple ui for debugging
+	{
+		GEngine->AddOnScreenDebugMessage(1, 1.0f, FColor::Yellow, FString::Printf(TEXT("Stamina: %.2f"), CurrentStamina));
+		if (CDBaseCharacterMovementComponent->IsOutOfStamina())
+		{
+			GEngine->AddOnScreenDebugMessage(1, 1.0f, FColor::Red, FString::Printf(TEXT("Stamina: %.2f"), CurrentStamina));
+		}
 	}
 }
 
@@ -128,4 +170,14 @@ void ACDBaseCharacter::OnSprintStart_Implementation()
 void ACDBaseCharacter::OnSprintEnd_Implementation()
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnSprintEnd_Implementation"));
+}
+
+bool ACDBaseCharacter::CanJumpInternal_Implementation() const
+{
+	if (CDBaseCharacterMovementComponent->IsOutOfStamina())
+	{
+		return false;
+	}
+
+	return Super::CanJumpInternal_Implementation();
 }

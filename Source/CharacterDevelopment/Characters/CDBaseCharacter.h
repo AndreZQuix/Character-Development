@@ -27,6 +27,7 @@ public:
 	virtual void StartSprint();
 	virtual void StopSprint();
 
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 	FORCEINLINE UCDBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() { return CDBaseCharacterMovementComponent; }
@@ -49,6 +50,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Movement")
 	float SprintSpeed = 800.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Movement | Sprint")
+	float MaxStamina = 10.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Movement | Sprint")
+	float StaminaRestoreVelocity = 5.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Movement | Sprint")
+	float SprintStaminaConsumptionVelocity = 5.0f;
+
 	bool CanStandUp() const;
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Character | Movement")
@@ -58,6 +68,8 @@ protected:
 	UFUNCTION(BlueprintNativeEvent, Category = "Character | Movement")
 	void OnSprintEnd();
 	virtual void OnSprintEnd_Implementation();
+
+	virtual bool CanJumpInternal_Implementation() const override;
 
 	UCDBaseCharacterMovementComponent* CDBaseCharacterMovementComponent;
 
@@ -73,7 +85,10 @@ protected:
 private:
 	bool bIsSprintRequested = false;
 
+	float CurrentStamina = 0.0f;
+
 	void TryChangeSprintState();
+	void UpdateStamina(float DeltaTime);
 
 	float GetIKOffsetForASocket(const FName& SocketName);
 

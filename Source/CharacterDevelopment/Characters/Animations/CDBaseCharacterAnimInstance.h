@@ -31,6 +31,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character animation")
 	bool bIsSprinting = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character animation")
+	bool bIsOutOfStamina = false;
+
 	UPROPERTY(EditAnywhere, Transient, BlueprintReadOnly, Category = "Character animation | IK Settings")
 	FVector LeftFootEffectorLocation = FVector::ZeroVector;
 

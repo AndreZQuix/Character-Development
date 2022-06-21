@@ -10,6 +10,12 @@ float UCDBaseCharacterMovementComponent::GetMaxSpeed() const
 	{
 		Result = SprintSpeed;
 	}
+
+	if (bIsOutOfStamina)
+	{
+		Result = OutOfStaminaSpeed;
+	}
+
 	return Result;
 }
 

@@ -25,6 +25,7 @@ void UCDBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsFalling = CharacterMovement->IsFalling();
 	bIsCrouching = CharacterMovement->IsCrouching();
 	bIsSprinting = CharacterMovement->IsSprinting();
+	bIsOutOfStamina = CharacterMovement->IsOutOfStamina();
 
 	LeftFootEffectorLocation = FVector(-(CachedBaseCharacter->GetIKLeftFootOffset() + CachedBaseCharacter->GetIKPelvisOffset()), 0.0f, 0.0f);
 	RightFootEffectorLocation = FVector(CachedBaseCharacter->GetIKRightFootOffset() + CachedBaseCharacter->GetIKPelvisOffset(), 0.0f, 0.0f);
