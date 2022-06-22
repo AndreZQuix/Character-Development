@@ -47,6 +47,23 @@ void ACDBaseCharacter::ChangeCrouchState()
 	}
 }
 
+void ACDBaseCharacter::Prone()
+{
+	// присел - дабл клик клавишу - лег, иначе - встал
+	// лежишь - нажал клавишу ctrl - встал ИЛИ лежишь - нажал клавишу пробел - встал (не прыгая)
+	if (!CDBaseCharacterMovementComponent->IsProne())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Proned"));
+		CDBaseCharacterMovementComponent->SetIsProne(true);
+	}
+	else if(CanStandUp())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Unproned"));
+		CDBaseCharacterMovementComponent->SetIsProne(false);
+	}
+
+}
+
 void ACDBaseCharacter::StartSprint()
 {
 	bIsSprintRequested = true;

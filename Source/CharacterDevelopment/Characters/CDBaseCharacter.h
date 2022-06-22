@@ -24,6 +24,7 @@ public:
 	virtual void LookUpAtRate(float Value) {};
 
 	virtual void ChangeCrouchState();
+	virtual void Prone();
 	virtual void StartSprint();
 	virtual void StopSprint();
 
@@ -37,6 +38,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE float GetIKRightFootOffset() const { return IKRightFootOffset; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool IsProne() const { return bIsProne; }
 
 	float GetIKPelvisOffset();
 
@@ -87,6 +91,8 @@ private:
 
 	float CurrentStamina = 0.0f;
 
+	bool bIsProne = false;
+
 	void TryChangeSprintState();
 	void UpdateStamina(float DeltaTime);
 
@@ -97,6 +103,5 @@ private:
 	float IKLeftFootOffset = 0.0f;
 	float IKRightFootOffset = 0.0f;
 	float IKPelvisOffset = 0.0f;
-
 	float IKTraceDistance = 50.0f;
 };

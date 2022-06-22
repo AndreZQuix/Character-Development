@@ -21,10 +21,15 @@ public:
 	void StopSprint();
 
 	FORCEINLINE bool IsOutOfStamina() const { return bIsOutOfStamina; }
-
 	void SetOutOfStamina(bool bIsOutOfStamina_In)
 	{
 		bIsOutOfStamina = bIsOutOfStamina_In;
+	}
+
+	FORCEINLINE bool IsProne() const { return bIsProne; }
+	void SetIsProne(bool bIsProne_In)
+	{
+		bIsProne = bIsProne_In;
 	}
 
 protected:
@@ -37,4 +42,5 @@ protected:
 private:
 	bool bIsSprinting;
 	bool bIsOutOfStamina;
+	bool bIsProne;
 };
