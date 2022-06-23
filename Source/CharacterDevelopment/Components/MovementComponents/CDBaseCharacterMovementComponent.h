@@ -27,10 +27,17 @@ public:
 	}
 
 	FORCEINLINE bool IsProne() const { return bIsProne; }
-	void SetIsProne(bool bIsProne_In)
-	{
-		bIsProne = bIsProne_In;
-	}
+	void SetIsProne(bool bIsProne_In);
+	virtual void Prone();
+	virtual void UnProne();
+
+	bool CanStandUpWhileProne() const;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character movement: prone")
+	float ProneCapsuleRadius = 40.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character movement: prone")
+	float ProneCapsuleHalfHeight = 40.0f;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: sprint", meta = (ClampMin = 0.0f, UIMin = 0.0f))
@@ -38,6 +45,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: sprint", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float OutOfStaminaSpeed = 200.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: prone", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float MaxProneSpeed = 150.0f;
 	
 private:
 	bool bIsSprinting;

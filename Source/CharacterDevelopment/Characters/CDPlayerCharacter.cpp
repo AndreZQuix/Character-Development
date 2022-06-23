@@ -97,7 +97,7 @@ void ACDPlayerCharacter::OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHei
 
 bool ACDPlayerCharacter::CanJumpInternal_Implementation() const
 {
-	if (CanStandUp() && bIsCrouched)
+	if (CanStandUpWhileCrouch() && bIsCrouched)
 	{
 		return true;
 	}

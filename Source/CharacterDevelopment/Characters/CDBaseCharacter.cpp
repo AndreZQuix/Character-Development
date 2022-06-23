@@ -37,31 +37,38 @@ void ACDBaseCharacter::UpdateIKSettings(float DeltaTime)
 
 void ACDBaseCharacter::ChangeCrouchState()
 {
-	if (GetCharacterMovement()->IsCrouching())
+	if (CDBaseCharacterMovementComponent->IsCrouching())
 	{
 		UnCrouch();
 	}
-	else if(!CDBaseCharacterMovementComponent->IsSprinting())
+	else if (!CDBaseCharacterMovementComponent->IsSprinting())
 	{
-		Crouch();
+		if (CDBaseCharacterMovementComponent->IsProne() && !CDBaseCharacterMovementComponent->IsCrouching() && CDBaseCharacterMovementComponent->CanStandUpWhileProne())
+		{
+			CDBaseCharacterMovementComponent->UnProne();
+			OnUnProne();
+		}
+		else
+		{
+			Crouch();
+		}
 	}
 }
 
-void ACDBaseCharacter::Prone()
+void ACDBaseCharacter::ChangeProneState()
 {
-	// присел - дабл клик клавишу - лег, иначе - встал
-	// лежишь - нажал клавишу ctrl - встал ИЛИ лежишь - нажал клавишу пробел - встал (не прыгая)
+	// crouching -> double click -> lay down, if prone -> get up
+	// if laying down -> crouching key click (or space key) -> get up (without jumping)
+
 	if (!CDBaseCharacterMovementComponent->IsProne())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Proned"));
-		CDBaseCharacterMovementComponent->SetIsProne(true);
+		CDBaseCharacterMovementComponent->Prone();
+		OnProne();
 	}
-	else if(CanStandUp())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Unproned"));
-		CDBaseCharacterMovementComponent->SetIsProne(false);
-	}
-
+	//else if(CanStandUpWhileProne() && CDBaseCharacterMovementComponent->IsProne())
+	//{
+	//	UnProne();
+	//}
 }
 
 void ACDBaseCharacter::StartSprint()
@@ -78,9 +85,22 @@ void ACDBaseCharacter::StopSprint()
 	bIsSprintRequested = false;
 }
 
+void ACDBaseCharacter::OnProne_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnProne_Implementation"));
+	GetCapsuleComponent()->SetCapsuleSize(CDBaseCharacterMovementComponent->ProneCapsuleRadius, CDBaseCharacterMovementComponent->ProneCapsuleHalfHeight);
+	FVector MeshLocation = FVector(GetMesh()->GetRelativeLocation().X, GetMesh()->GetRelativeLocation().Y, GetMesh()->GetRelativeLocation().Z + 100.0f);
+	GetMesh()->SetRelativeLocation(MeshLocation);
+}
+
+void ACDBaseCharacter::OnUnProne_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnUnProne_Implementation"));
+}
+
 void ACDBaseCharacter::TryChangeSprintState()
 {
-	if (bIsSprintRequested && !CDBaseCharacterMovementComponent->IsOutOfStamina() && !CDBaseCharacterMovementComponent->IsSprinting() && CanStandUp())
+	if (bIsSprintRequested && !CDBaseCharacterMovementComponent->IsOutOfStamina() && !CDBaseCharacterMovementComponent->IsSprinting() && CanStandUpWhileCrouch())
 	{
 		CDBaseCharacterMovementComponent->StartSprint();
 		OnSprintStart();
@@ -157,7 +177,7 @@ float ACDBaseCharacter::GetIKPelvisOffset()
 	return -FMath::Abs(IKRightFootOffset - IKLeftFootOffset); // if character can't reach the surface with his leg
 }
 
-bool ACDBaseCharacter::CanStandUp() const
+bool ACDBaseCharacter::CanStandUpWhileCrouch() const
 {
 	ACharacter* DefaultCharacter = GetClass()->GetDefaultObject<ACharacter>();	// get standing capsule collision to calculate it's half height
 	const FCollisionShape StandingCapsuleShape = DefaultCharacter->GetCapsuleComponent()->GetCollisionShape();
@@ -191,7 +211,7 @@ void ACDBaseCharacter::OnSprintEnd_Implementation()
 
 bool ACDBaseCharacter::CanJumpInternal_Implementation() const
 {
-	if (CDBaseCharacterMovementComponent->IsOutOfStamina())
+	if (CDBaseCharacterMovementComponent->IsOutOfStamina() || CDBaseCharacterMovementComponent->IsProne())
 	{
 		return false;
 	}

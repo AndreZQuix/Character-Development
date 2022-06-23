@@ -24,7 +24,8 @@ public:
 	virtual void LookUpAtRate(float Value) {};
 
 	virtual void ChangeCrouchState();
-	virtual void Prone();
+	virtual void ChangeProneState();
+
 	virtual void StartSprint();
 	virtual void StopSprint();
 
@@ -39,10 +40,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE float GetIKRightFootOffset() const { return IKRightFootOffset; }
 
-	UFUNCTION(BlueprintCallable)
-	FORCEINLINE bool IsProne() const { return bIsProne; }
-
 	float GetIKPelvisOffset();
+
+	bool CanStandUpWhileCrouch() const;
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Character | Movement | Prone")
+	void OnProne();
+	virtual void OnProne_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Character | Movement | Prone")
+	void OnUnProne();
+	virtual void OnUnProne_Implementation();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Control")
@@ -62,8 +70,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Movement | Sprint")
 	float SprintStaminaConsumptionVelocity = 5.0f;
-
-	bool CanStandUp() const;
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Character | Movement")
 	void OnSprintStart();
@@ -88,10 +94,9 @@ protected:
 
 private:
 	bool bIsSprintRequested = false;
+	bool bWantsToCrouch = false;
 
 	float CurrentStamina = 0.0f;
-
-	bool bIsProne = false;
 
 	void TryChangeSprintState();
 	void UpdateStamina(float DeltaTime);
