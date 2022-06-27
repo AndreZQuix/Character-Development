@@ -95,16 +95,6 @@ void ACDPlayerCharacter::OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHei
 	SpringArmComponent->TargetOffset -= FVector(0.0f, 0.0f, HalfHeightAdjust);
 }
 
-//bool ACDPlayerCharacter::CanJumpInternal_Implementation() const
-//{
-//	if (CanStandUpWhileCrouch() && bIsCrouched)
-//	{
-//		return true;
-//	}
-//
-//	return Super::CanJumpInternal_Implementation();
-//}
-
 void ACDPlayerCharacter::OnJumped_Implementation()
 {
 	if (bIsCrouched)

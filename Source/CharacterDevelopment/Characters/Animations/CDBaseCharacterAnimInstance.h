@@ -46,6 +46,9 @@ protected:
 	UPROPERTY(EditAnywhere, Transient, BlueprintReadOnly, Category = "Character animation | IK Settings")
 	FVector PelvisEffectorLocation = FVector::ZeroVector;
 
+	UPROPERTY(EditAnywhere, Transient, BlueprintReadOnly, Category = "Character animation | IK Settings")
+	float PronePelvisOffset = 0.0f;
+
 private:
 	TWeakObjectPtr<class ACDBaseCharacter> CachedBaseCharacter;
 };

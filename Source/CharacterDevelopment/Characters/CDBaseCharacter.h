@@ -41,6 +41,9 @@ public:
 	FORCEINLINE float GetIKRightFootOffset() const { return IKRightFootOffset; }
 
 	float GetIKPelvisOffset();
+	
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE float GetPronePelvisOffset() const { return PronePelvisOffset; }
 
 	bool CanStandUpWhileCrouch() const;
 
@@ -108,4 +111,6 @@ private:
 	float IKRightFootOffset = 0.0f;
 	float IKPelvisOffset = 0.0f;
 	float IKTraceDistance = 50.0f;
+	
+	float PronePelvisOffset = -60.0f;
 };

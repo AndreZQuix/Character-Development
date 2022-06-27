@@ -51,9 +51,6 @@ void ACDBaseCharacter::ChangeCrouchState()
 
 void ACDBaseCharacter::ChangeProneState()
 {
-	// crouching -> double click -> lay down, if prone -> get up
-	// if laying down -> crouching key click (or space key) -> get up (without jumping)
-
 	if (!CDBaseCharacterMovementComponent->IsProning())
 	{
 		CDBaseCharacterMovementComponent->Prone();
@@ -69,17 +66,17 @@ void ACDBaseCharacter::OnProne(float HeightAdjust, float ScaledHeightAdjust)
 	UE_LOG(LogTemp, Warning, TEXT("OnProne_Implementation"));
 	RecalculateBaseEyeHeight();
 
-	const ACharacter* DefaultChar = GetDefault<ACharacter>(GetClass());
-	if (GetMesh() && DefaultChar->GetMesh())
-	{
-		FVector& MeshRelativeLocation = GetMesh()->GetRelativeLocation_DirectMutable();
-		MeshRelativeLocation.Z = DefaultChar->GetMesh()->GetRelativeLocation().Z + HeightAdjust + CDBaseCharacterMovementComponent->CrouchedHalfHeight;
-		BaseTranslationOffset.Z = MeshRelativeLocation.Z;
-	}
-	else
-	{
-		BaseTranslationOffset.Z = DefaultChar->GetBaseTranslationOffset().Z + HeightAdjust + CDBaseCharacterMovementComponent->CrouchedHalfHeight;
-	}
+	//const ACharacter* DefaultChar = GetDefault<ACharacter>(GetClass());
+	//if (GetMesh() && DefaultChar->GetMesh())
+	//{
+	//	FVector& MeshRelativeLocation = GetMesh()->GetRelativeLocation_DirectMutable();
+	//	MeshRelativeLocation.Z = DefaultChar->GetMesh()->GetRelativeLocation().Z + HeightAdjust + CDBaseCharacterMovementComponent->CrouchedHalfHeight;
+	//	BaseTranslationOffset.Z = MeshRelativeLocation.Z;
+	//}
+	//else
+	//{
+	//	BaseTranslationOffset.Z = DefaultChar->GetBaseTranslationOffset().Z + HeightAdjust + CDBaseCharacterMovementComponent->CrouchedHalfHeight;
+	//}
 
 	K2_OnProne(HeightAdjust, ScaledHeightAdjust);
 }

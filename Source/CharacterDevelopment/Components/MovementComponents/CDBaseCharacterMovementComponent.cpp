@@ -106,6 +106,9 @@ void UCDBaseCharacterMovementComponent::Prone()
 
 		AdjustProxyCapsuleSize();
 		CachedBaseCharacter->OnProne(HalfHeightAdjust, ScaledHalfHeightAdjust);
+
+		//FVector NewMeshLocation = FVector(CachedBaseCharacter->GetMesh()->GetRelativeLocation().X, CachedBaseCharacter->GetMesh()->GetRelativeLocation().Y, CachedBaseCharacter->GetMesh()->GetRelativeLocation().Z + 100.0f);
+		//CachedBaseCharacter->GetMesh()->SetRelativeLocation(NewMeshLocation);
 	}
 }
 
