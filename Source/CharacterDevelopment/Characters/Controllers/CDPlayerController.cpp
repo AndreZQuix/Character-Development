@@ -19,11 +19,11 @@ void ACDPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("LookUp", this, &ACDPlayerController::LookUp);
 	InputComponent->BindAxis("TurnAtRate", this, &ACDPlayerController::TurnAtRate);
 	InputComponent->BindAxis("LookUpAtRate", this, &ACDPlayerController::LookUpAtRate);
-	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACDPlayerController::Jump);
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ACDPlayerController::ChangeCrouchState);
 	InputComponent->BindAction("Prone", EInputEvent::IE_DoubleClick, this, &ACDPlayerController::ChangeProneState);
 	InputComponent->BindAction("Sprint", EInputEvent::IE_Pressed, this, &ACDPlayerController::StartSprint);
 	InputComponent->BindAction("Sprint", EInputEvent::IE_Released, this, &ACDPlayerController::StopSprint);
+	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACDPlayerController::Jump);
 }
 
 void ACDPlayerController::MoveForward(float Value)

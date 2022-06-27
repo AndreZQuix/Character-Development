@@ -26,12 +26,12 @@ public:
 		bIsOutOfStamina = bIsOutOfStamina_In;
 	}
 
-	FORCEINLINE bool IsProne() const { return bIsProne; }
-	void SetIsProne(bool bIsProne_In);
+	FORCEINLINE bool IsProning() const { return bIsProned; }
+	void SetIsProning(bool bIsProning_In);
 	virtual void Prone();
 	virtual void UnProne();
 
-	bool CanStandUpWhileProne() const;
+	bool CanProneInCurrentState() const;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character movement: prone")
 	float ProneCapsuleRadius = 40.0f;
@@ -52,5 +52,5 @@ protected:
 private:
 	bool bIsSprinting;
 	bool bIsOutOfStamina;
-	bool bIsProne;
+	bool bIsProned;
 };

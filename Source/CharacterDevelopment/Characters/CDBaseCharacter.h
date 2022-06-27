@@ -44,13 +44,13 @@ public:
 
 	bool CanStandUpWhileCrouch() const;
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Character | Movement | Prone")
-	void OnProne();
-	virtual void OnProne_Implementation();
+	virtual void OnProne(float HeightAdjust, float ScaledHeightAdjust);
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnProne", ScriptName = "OnProne"))
+	void K2_OnProne(float HeightAdjust, float ScaledHeightAdjust);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Character | Movement | Prone")
-	void OnUnProne();
-	virtual void OnUnProne_Implementation();
+	virtual void OnUnProne(float HeightAdjust, float ScaledHeightAdjust);
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnUnProne", ScriptName = "OnUnProne"))
+	void K2_OnUnProne(float HeightAdjust, float ScaledHeightAdjust);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character | Control")
@@ -94,7 +94,6 @@ protected:
 
 private:
 	bool bIsSprintRequested = false;
-	bool bWantsToCrouch = false;
 
 	float CurrentStamina = 0.0f;
 

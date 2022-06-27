@@ -37,21 +37,15 @@ void ACDBaseCharacter::UpdateIKSettings(float DeltaTime)
 
 void ACDBaseCharacter::ChangeCrouchState()
 {
-	if (CDBaseCharacterMovementComponent->IsCrouching())
+	if (!CDBaseCharacterMovementComponent->IsCrouching() && !CDBaseCharacterMovementComponent->IsSprinting() && !CDBaseCharacterMovementComponent->IsProning())
 	{
-		UnCrouch();
+		UE_LOG(LogTemp, Warning, TEXT("Crouch"));
+		Crouch();
 	}
-	else if (!CDBaseCharacterMovementComponent->IsSprinting())
+	else if (CDBaseCharacterMovementComponent->IsCrouching() && !CDBaseCharacterMovementComponent->IsProning())
 	{
-		if (CDBaseCharacterMovementComponent->IsProne() && !CDBaseCharacterMovementComponent->IsCrouching() && CDBaseCharacterMovementComponent->CanStandUpWhileProne())
-		{
-			CDBaseCharacterMovementComponent->UnProne();
-			OnUnProne();
-		}
-		else
-		{
-			Crouch();
-		}
+		UE_LOG(LogTemp, Warning, TEXT("UnCrouch"));
+		UnCrouch();
 	}
 }
 
@@ -60,15 +54,60 @@ void ACDBaseCharacter::ChangeProneState()
 	// crouching -> double click -> lay down, if prone -> get up
 	// if laying down -> crouching key click (or space key) -> get up (without jumping)
 
-	if (!CDBaseCharacterMovementComponent->IsProne())
+	if (!CDBaseCharacterMovementComponent->IsProning())
 	{
 		CDBaseCharacterMovementComponent->Prone();
-		OnProne();
 	}
-	//else if(CanStandUpWhileProne() && CDBaseCharacterMovementComponent->IsProne())
-	//{
-	//	UnProne();
-	//}
+	else if (CDBaseCharacterMovementComponent->IsProning() && !CDBaseCharacterMovementComponent->IsCrouching())
+	{
+		CDBaseCharacterMovementComponent->UnProne();
+	}
+}
+
+void ACDBaseCharacter::OnProne(float HeightAdjust, float ScaledHeightAdjust)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnProne_Implementation"));
+	RecalculateBaseEyeHeight();
+
+	const ACharacter* DefaultChar = GetDefault<ACharacter>(GetClass());
+	if (GetMesh() && DefaultChar->GetMesh())
+	{
+		FVector& MeshRelativeLocation = GetMesh()->GetRelativeLocation_DirectMutable();
+		MeshRelativeLocation.Z = DefaultChar->GetMesh()->GetRelativeLocation().Z + HeightAdjust + CDBaseCharacterMovementComponent->CrouchedHalfHeight;
+		BaseTranslationOffset.Z = MeshRelativeLocation.Z;
+	}
+	else
+	{
+		BaseTranslationOffset.Z = DefaultChar->GetBaseTranslationOffset().Z + HeightAdjust + CDBaseCharacterMovementComponent->CrouchedHalfHeight;
+	}
+
+	K2_OnProne(HeightAdjust, ScaledHeightAdjust);
+}
+
+void ACDBaseCharacter::OnUnProne(float HeightAdjust, float ScaledHeightAdjust)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnUnProne_Implementation"));
+	RecalculateBaseEyeHeight();
+
+	const ACharacter* DefaultChar = GetDefault<ACharacter>(GetClass());
+	const float HeightDifference = CDBaseCharacterMovementComponent->CrouchedHalfHeight - CDBaseCharacterMovementComponent->ProneCapsuleHalfHeight;
+	if (GetMesh() && DefaultChar->GetMesh())
+	{
+		FVector& MeshRelativeLocation = GetMesh()->GetRelativeLocation_DirectMutable();
+		MeshRelativeLocation.Z = DefaultChar->GetMesh()->GetRelativeLocation().Z + HeightDifference;
+		BaseTranslationOffset.Z = MeshRelativeLocation.Z;
+	}
+	else
+	{
+		BaseTranslationOffset.Z = DefaultChar->GetBaseTranslationOffset().Z + HeightDifference;
+	}
+
+	if (!CDBaseCharacterMovementComponent->IsProning())
+	{
+		Crouch();
+	}
+
+	K2_OnUnProne(HeightAdjust, ScaledHeightAdjust);
 }
 
 void ACDBaseCharacter::StartSprint()
@@ -83,19 +122,6 @@ void ACDBaseCharacter::StartSprint()
 void ACDBaseCharacter::StopSprint()
 {
 	bIsSprintRequested = false;
-}
-
-void ACDBaseCharacter::OnProne_Implementation()
-{
-	UE_LOG(LogTemp, Warning, TEXT("OnProne_Implementation"));
-	GetCapsuleComponent()->SetCapsuleSize(CDBaseCharacterMovementComponent->ProneCapsuleRadius, CDBaseCharacterMovementComponent->ProneCapsuleHalfHeight);
-	FVector MeshLocation = FVector(GetMesh()->GetRelativeLocation().X, GetMesh()->GetRelativeLocation().Y, GetMesh()->GetRelativeLocation().Z + 100.0f);
-	GetMesh()->SetRelativeLocation(MeshLocation);
-}
-
-void ACDBaseCharacter::OnUnProne_Implementation()
-{
-	UE_LOG(LogTemp, Warning, TEXT("OnUnProne_Implementation"));
 }
 
 void ACDBaseCharacter::TryChangeSprintState()
@@ -211,9 +237,14 @@ void ACDBaseCharacter::OnSprintEnd_Implementation()
 
 bool ACDBaseCharacter::CanJumpInternal_Implementation() const
 {
-	if (CDBaseCharacterMovementComponent->IsOutOfStamina() || CDBaseCharacterMovementComponent->IsProne())
+	if (CDBaseCharacterMovementComponent->IsOutOfStamina() || CDBaseCharacterMovementComponent->IsProning())
 	{
 		return false;
+	}
+
+	if (bIsCrouched && CanStandUpWhileCrouch())
+	{
+		return true;
 	}
 
 	return Super::CanJumpInternal_Implementation();
