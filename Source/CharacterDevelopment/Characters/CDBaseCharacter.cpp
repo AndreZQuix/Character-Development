@@ -62,7 +62,6 @@ void ACDBaseCharacter::ChangeProneState()
 void ACDBaseCharacter::OnProne(float HeightAdjust, float ScaledHeightAdjust)
 {
 	RecalculateBaseEyeHeight();
-
 	K2_OnProne(HeightAdjust, ScaledHeightAdjust);
 }
 
