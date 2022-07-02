@@ -55,7 +55,6 @@ void UCDBaseCharacterMovementComponent::Prone()
 		return;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Prone"));
 	ACDBaseCharacter* CachedBaseCharacter = Cast<ACDBaseCharacter>(CharacterOwner);
 	if (CachedBaseCharacter)
 	{
@@ -114,7 +113,6 @@ void UCDBaseCharacterMovementComponent::Prone()
 
 void UCDBaseCharacterMovementComponent::UnProne()
 {
-	UE_LOG(LogTemp, Warning, TEXT("UnProne"));
 	ACDBaseCharacter* CachedBaseCharacter = Cast<ACDBaseCharacter>(CharacterOwner);
 	if (CachedBaseCharacter)
 	{

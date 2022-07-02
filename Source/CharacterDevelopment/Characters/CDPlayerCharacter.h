@@ -36,6 +36,10 @@ public:
 	void OnSprintStart_Implementation() override;
 	void OnSprintEnd_Implementation() override;
 
+	virtual void OnProne(float HeightAdjust, float ScaledHeightAdjust) override;
+
+	virtual void OnUnProne(float HeightAdjust, float ScaledHeightAdjust) override;
+
 	UPROPERTY(EditAnywhere, Category = "Character | Camera")
 	UCurveFloat* SpringArmSprintCurve;
 

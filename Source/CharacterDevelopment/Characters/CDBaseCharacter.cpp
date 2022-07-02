@@ -39,12 +39,10 @@ void ACDBaseCharacter::ChangeCrouchState()
 {
 	if (!CDBaseCharacterMovementComponent->IsCrouching() && !CDBaseCharacterMovementComponent->IsSprinting() && !CDBaseCharacterMovementComponent->IsProning())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Crouch"));
 		Crouch();
 	}
 	else if (CDBaseCharacterMovementComponent->IsCrouching() && !CDBaseCharacterMovementComponent->IsProning())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UnCrouch"));
 		UnCrouch();
 	}
 }
@@ -63,27 +61,14 @@ void ACDBaseCharacter::ChangeProneState()
 
 void ACDBaseCharacter::OnProne(float HeightAdjust, float ScaledHeightAdjust)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnProne_Implementation"));
 	RecalculateBaseEyeHeight();
-
-	//const ACharacter* DefaultChar = GetDefault<ACharacter>(GetClass());
-	//if (GetMesh() && DefaultChar->GetMesh())
-	//{
-	//	FVector& MeshRelativeLocation = GetMesh()->GetRelativeLocation_DirectMutable();
-	//	MeshRelativeLocation.Z = DefaultChar->GetMesh()->GetRelativeLocation().Z + HeightAdjust + CDBaseCharacterMovementComponent->CrouchedHalfHeight;
-	//	BaseTranslationOffset.Z = MeshRelativeLocation.Z;
-	//}
-	//else
-	//{
-	//	BaseTranslationOffset.Z = DefaultChar->GetBaseTranslationOffset().Z + HeightAdjust + CDBaseCharacterMovementComponent->CrouchedHalfHeight;
-	//}
 
 	K2_OnProne(HeightAdjust, ScaledHeightAdjust);
 }
 
 void ACDBaseCharacter::OnUnProne(float HeightAdjust, float ScaledHeightAdjust)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnUnProne_Implementation"));
+
 	RecalculateBaseEyeHeight();
 
 	const ACharacter* DefaultChar = GetDefault<ACharacter>(GetClass());
@@ -185,12 +170,6 @@ float ACDBaseCharacter::GetIKOffsetForASocket(const FName& SocketName)
 	{
 		Result = TraceStart.Z - CapsuleHalfHeight - HitResult.Location.Z;
 	}
-
-	//const FVector FootSizeBox = FVector(2.5f, 15.0f, 6.0f);
-	//if (UKismetSystemLibrary::BoxTraceSingle(GetWorld(), TraceStart, TraceEnd, FootSizeBox, GetMesh()->GetSocketRotation(SocketName), TraceType, true, TArray<AActor*>(), EDrawDebugTrace::ForOneFrame, HitResult, true)) // shape cast
-	//{
-	//	Result = TraceStart.Z - CapsuleHalfHeight - HitResult.Location.Z;
-	//}
 
 	return Result;
 }

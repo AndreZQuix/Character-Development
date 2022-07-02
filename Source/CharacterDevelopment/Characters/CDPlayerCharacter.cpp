@@ -113,6 +113,18 @@ void ACDPlayerCharacter::OnSprintEnd_Implementation()
 	SpringArmTimeline.Reverse();
 }
 
+void ACDPlayerCharacter::OnProne(float HeightAdjust, float ScaledHeightAdjust)
+{
+	Super::OnProne(HeightAdjust, ScaledHeightAdjust);
+	SpringArmComponent->TargetOffset += FVector(0.0f, 0.0f, ScaledHeightAdjust);
+}
+
+void ACDPlayerCharacter::OnUnProne(float HeightAdjust, float ScaledHeightAdjust)
+{
+	Super::OnUnProne(HeightAdjust, ScaledHeightAdjust);
+	SpringArmComponent->TargetOffset -= FVector(0.0f, 0.0f, ScaledHeightAdjust);
+}
+
 void ACDPlayerCharacter::HandleSpringArm(float Value)
 {
 	float Result = FMath::Lerp(DefaultSpringArmLength, SpringArmLength, Value);
