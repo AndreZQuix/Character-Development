@@ -40,6 +40,8 @@ public:
 	float ProneCapsuleHalfHeight = 40.0f;
 
 protected:
+	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: sprint", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float SprintSpeed = 1200.0f;
 
@@ -48,6 +50,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: prone", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float MaxProneSpeed = 150.0f;
+
+	UPROPERTY(Category = "Character Movement: swimming", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float SwimmingCapsuleRadius = 40.0f;
+
+	UPROPERTY(Category = "Character Movement: swimming", EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float SwimmingCapsuleHalfHeight = 40.0f;
 	
 private:
 	bool bIsSprinting;

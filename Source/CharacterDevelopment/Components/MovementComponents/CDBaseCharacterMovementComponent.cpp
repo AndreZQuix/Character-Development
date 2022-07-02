@@ -230,3 +230,19 @@ void UCDBaseCharacterMovementComponent::UnProne()
 		CachedBaseCharacter->OnUnProne(HalfHeightAdjust, ScaledHalfHeightAdjust);
 	}
 }
+
+void UCDBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
+{
+	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
+	if (MovementMode == MOVE_Swimming)
+	{
+		CharacterOwner->GetCapsuleComponent()->SetCapsuleSize(SwimmingCapsuleRadius, SwimmingCapsuleHalfHeight);
+	}
+	else if (PrevMovementMode == MOVE_Swimming)
+	{
+		FRotator NewRotation = FRotator(CharacterOwner->GetControlRotation().Pitch, CharacterOwner->GetControlRotation().Yaw, 0.0f);
+		CharacterOwner->GetController()->SetControlRotation(NewRotation);
+		ACharacter* DefaultCharacter = CharacterOwner->GetClass()->GetDefaultObject<ACharacter>();
+		CharacterOwner->GetCapsuleComponent()->SetCapsuleSize(DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleRadius(), DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight(), true);
+	}
+}
