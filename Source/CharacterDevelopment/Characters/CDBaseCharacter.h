@@ -36,6 +36,8 @@ public:
 	virtual void SwimRight(float Value) {};
 	virtual void SwimUp(float Value) {};
 
+	virtual void Mantle();
+
 	FORCEINLINE UCDBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() { return CDBaseCharacterMovementComponent; }
 
 	UFUNCTION(BlueprintCallable)
@@ -89,6 +91,9 @@ protected:
 	virtual bool CanJumpInternal_Implementation() const override;
 
 	UCDBaseCharacterMovementComponent* CDBaseCharacterMovementComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Movement")
+	class ULedgeDetectorComponent* LedgeDetectorComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | IK settings")
 	FName LeftFootSocketName;

@@ -23,6 +23,7 @@ void ACDPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Prone", EInputEvent::IE_DoubleClick, this, &ACDPlayerController::ChangeProneState);
 	InputComponent->BindAction("Sprint", EInputEvent::IE_Pressed, this, &ACDPlayerController::StartSprint);
 	InputComponent->BindAction("Sprint", EInputEvent::IE_Released, this, &ACDPlayerController::StopSprint);
+	InputComponent->BindAction("Mantle", EInputEvent::IE_Pressed, this, &ACDPlayerController::Mantle);
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACDPlayerController::Jump);
 	InputComponent->BindAxis("SwimForward", this, &ACDPlayerController::SwimForward);
 	InputComponent->BindAxis("SwimRight", this, &ACDPlayerController::SwimRight);
@@ -98,6 +99,14 @@ void ACDPlayerController::ChangeProneState()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->ChangeProneState();
+	}
+}
+
+void ACDPlayerController::Mantle()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->Mantle();
 	}
 }
 

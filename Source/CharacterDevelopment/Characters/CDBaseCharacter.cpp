@@ -6,12 +6,15 @@
 #include "../Components/MovementComponents/CDBaseCharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "../Components/LedgeDetectorComponent.h"
 
 ACDBaseCharacter::ACDBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCDBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	CDBaseCharacterMovementComponent = StaticCast<UCDBaseCharacterMovementComponent*>(GetCharacterMovement());
 	CDBaseCharacterMovementComponent->bCanWalkOffLedgesWhenCrouching = 1;
+
+	LedgeDetectorComponent = CreateDefaultSubobject<ULedgeDetectorComponent>(TEXT("LedgeDetector"));
 }
 
 void ACDBaseCharacter::BeginPlay()
@@ -26,6 +29,15 @@ void ACDBaseCharacter::Tick(float DeltaTime)
 	UpdateIKSettings(DeltaTime);
 	TryChangeSprintState();
 	UpdateStamina(DeltaTime);
+}
+
+void ACDBaseCharacter::Mantle()
+{
+	FLedgeDescription LedgeDescription;
+	if (LedgeDetectorComponent->DetectLedge(LedgeDescription))
+	{
+		// TODO activate mantling
+	}
 }
 
 void ACDBaseCharacter::UpdateIKSettings(float DeltaTime)
@@ -165,7 +177,7 @@ float ACDBaseCharacter::GetIKOffsetForASocket(const FName& SocketName)
 	FHitResult HitResult;
 	ETraceTypeQuery TraceType = UEngineTypes::ConvertToTraceType(ECC_Visibility);
 
-	if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), TraceStart, TraceEnd, TraceType, true, TArray<AActor*>(), EDrawDebugTrace::ForOneFrame, HitResult, true))
+	if (UKismetSystemLibrary::LineTraceSingle(GetWorld(), TraceStart, TraceEnd, TraceType, true, TArray<AActor*>(), EDrawDebugTrace::None, HitResult, true))
 	{
 		Result = TraceStart.Z - CapsuleHalfHeight - HitResult.Location.Z;
 	}
