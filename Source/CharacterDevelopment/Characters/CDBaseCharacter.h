@@ -32,6 +32,10 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void SwimForward(float Value) {};
+	virtual void SwimRight(float Value) {};
+	virtual void SwimUp(float Value) {};
+
 	FORCEINLINE UCDBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() { return CDBaseCharacterMovementComponent; }
 
 	UFUNCTION(BlueprintCallable)

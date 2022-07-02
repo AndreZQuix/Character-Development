@@ -24,6 +24,9 @@ void ACDPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Sprint", EInputEvent::IE_Pressed, this, &ACDPlayerController::StartSprint);
 	InputComponent->BindAction("Sprint", EInputEvent::IE_Released, this, &ACDPlayerController::StopSprint);
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACDPlayerController::Jump);
+	InputComponent->BindAxis("SwimForward", this, &ACDPlayerController::SwimForward);
+	InputComponent->BindAxis("SwimRight", this, &ACDPlayerController::SwimRight);
+	InputComponent->BindAxis("SwimUp", this, &ACDPlayerController::SwimUp);
 }
 
 void ACDPlayerController::MoveForward(float Value)
@@ -111,5 +114,29 @@ void ACDPlayerController::StopSprint()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->StopSprint();
+	}
+}
+
+void ACDPlayerController::SwimForward(float Value)
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->SwimForward(Value);
+	}
+}
+
+void ACDPlayerController::SwimRight(float Value)
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->SwimRight(Value);
+	}
+}
+
+void ACDPlayerController::SwimUp(float Value)
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->SwimUp(Value);
 	}
 }

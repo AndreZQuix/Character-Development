@@ -40,6 +40,10 @@ public:
 
 	virtual void OnUnProne(float HeightAdjust, float ScaledHeightAdjust) override;
 
+	virtual void SwimForward(float Value) override;
+	virtual void SwimRight(float Value) override;
+	virtual void SwimUp(float Value) override;
+
 	UPROPERTY(EditAnywhere, Category = "Character | Camera")
 	UCurveFloat* SpringArmSprintCurve;
 
