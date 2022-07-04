@@ -7,6 +7,20 @@
 #include "../LedgeDetectorComponent.h"
 #include "CDBaseCharacterMovementComponent.generated.h"
 
+struct FMantlingMovementParameters
+{
+	FVector InitialLocation = FVector::ZeroVector;
+	FRotator InitialRotation = FRotator::ZeroRotator;
+
+	FVector TargetLocation = FVector::ZeroVector;
+	FRotator TargetRotation = FRotator::ZeroRotator;
+
+	float Duration = 1.0f;
+	float StartTime = 0.0f;
+
+	UCurveVector* MantlingCurve;
+};
+
 UENUM(BlueprintType)
 enum class ECustomMovementMode : uint8
 {
@@ -26,7 +40,7 @@ public:
 	void StartSprint();
 	void StopSprint();
 
-	void StartMantle(const FLedgeDescription& LedgeDescription);
+	void StartMantle(const FMantlingMovementParameters& MantlingParameters);
 	void EndMantle();
 	bool IsMantling();
 
@@ -74,10 +88,7 @@ private:
 	bool bIsOutOfStamina;
 	bool bIsProned;
 
-	FLedgeDescription TargetLedge;
-	FVector InitialMantlingLocation;
-	FRotator InitialMantlingRotation;
+	FMantlingMovementParameters CurrentMantlingParameters;
 
 	FTimerHandle MantlingTimer;
-	float TargetMantlingTime = 1.0f;
 };
