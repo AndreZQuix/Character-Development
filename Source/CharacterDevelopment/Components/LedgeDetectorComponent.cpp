@@ -5,6 +5,10 @@
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
 #include "../CharacterDevelopmentTypes.h"
+#include "../Utils/CDTraceUtils.h"
+#include "Kismet/GameplayStatics.h"
+#include "../CDGameInstance.h"
+#include "../Subsystems/CDDebugSubsystem.h"
 
 // Called when the game starts
 void ULedgeDetectorComponent::BeginPlay()
@@ -22,6 +26,14 @@ bool ULedgeDetectorComponent::DetectLedge(OUT FLedgeDescription& LedgeDescriptio
 	QueryParams.bTraceComplex = true;
 	QueryParams.AddIgnoredActor(GetOwner());
 
+#if ENABLE_DRAW_DEBUG
+	UCDDebugSubsystem* DebugSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UCDDebugSubsystem>();
+	bool bIsDebugEnabled = DebugSubsystem->IsCategoryEnabled(DebugCategoryLedgeDetection);
+#else
+	bool bIsDebugEnabled = false;
+#endif
+
+	float DrawTime = 2.0f;
 	float BottomZOffset = 2.0f;
 	FVector CharacterBottom = CachedCharacterOwner->GetActorLocation() - (CapsuleComponent->GetScaledCapsuleHalfHeight() - BottomZOffset) * FVector::UpVector;
 
@@ -30,10 +42,10 @@ bool ULedgeDetectorComponent::DetectLedge(OUT FLedgeDescription& LedgeDescriptio
 	float ForwardCheckCapsuleHalfHeight = (MaximumLedgeHeight - MinimumLedgeHeight) * 0.5f;
 
 	FHitResult ForwardCheckHitResult;
-	FCollisionShape ForwardCapsuleShape = FCollisionShape::MakeCapsule(ForwardCheckCapsuleRadius, ForwardCheckCapsuleHalfHeight);
 	FVector ForwardStartLocation = CharacterBottom + (MinimumLedgeHeight + ForwardCheckCapsuleHalfHeight) * FVector::UpVector;
 	FVector ForwardEndLocation = ForwardStartLocation + CachedCharacterOwner->GetActorForwardVector() * ForwardCheckDistance;
-	if (!GetWorld()->SweepSingleByChannel(ForwardCheckHitResult, ForwardStartLocation, ForwardEndLocation, FQuat::Identity, ECC_Climbing, ForwardCapsuleShape, QueryParams))
+
+	if (!CDTraceUtils::SweepCapsuleSingleByChannel(GetWorld(), ForwardCheckHitResult, ForwardStartLocation, ForwardEndLocation, ForwardCheckCapsuleRadius, ForwardCheckCapsuleHalfHeight, FQuat::Identity, ECC_Climbing, QueryParams, FCollisionResponseParams::DefaultResponseParam, bIsDebugEnabled, DrawTime))
 	{
 		return false;
 	}
@@ -41,13 +53,13 @@ bool ULedgeDetectorComponent::DetectLedge(OUT FLedgeDescription& LedgeDescriptio
 	// Downward check
 	FHitResult DownwardCheckHitResult;
 	float DownwardSphereTraceRadius = CapsuleComponent->GetScaledCapsuleRadius();
-	FCollisionShape DownwardSphereShape = FCollisionShape::MakeSphere(DownwardSphereTraceRadius);
 
 	float DownwardCheckDepthOffset = 10.0f;
 	FVector DownwardStartLocation = ForwardCheckHitResult.ImpactPoint - ForwardCheckHitResult.ImpactNormal * DownwardCheckDepthOffset;
 	DownwardStartLocation.Z = CharacterBottom.Z + MaximumLedgeHeight + DownwardSphereTraceRadius;
 	FVector DownwardEndLocation(DownwardStartLocation.X, DownwardStartLocation.Y, CharacterBottom.Z);
-	if (!GetWorld()->SweepSingleByChannel(DownwardCheckHitResult, DownwardStartLocation, DownwardEndLocation, FQuat::Identity, ECC_Climbing, ForwardCapsuleShape, QueryParams))
+
+	if (!CDTraceUtils::SweepSphereSingleByChannel(GetWorld(), DownwardCheckHitResult, DownwardStartLocation, DownwardEndLocation, DownwardSphereTraceRadius, ECC_Climbing, QueryParams, FCollisionResponseParams::DefaultResponseParam, bIsDebugEnabled, DrawTime))
 	{
 		return false;
 	}
@@ -55,9 +67,9 @@ bool ULedgeDetectorComponent::DetectLedge(OUT FLedgeDescription& LedgeDescriptio
 	// Overlap check
 	float OverlapCapsuleRadius = CapsuleComponent->GetScaledCapsuleRadius();
 	float OverlapCapsuleHalfHeight = CapsuleComponent->GetScaledCapsuleHalfHeight();
-	FCollisionShape OverlapCapsuleShape = FCollisionShape::MakeCapsule(OverlapCapsuleRadius, OverlapCapsuleHalfHeight);
 	FVector OverlapLocation = DownwardCheckHitResult.ImpactPoint + OverlapCapsuleRadius;
-	if (GetWorld()->OverlapAnyTestByProfile(OverlapLocation, FQuat::Identity, FName("Pawn"), OverlapCapsuleShape, QueryParams))
+	
+	if (CDTraceUtils::OverlapCapsuleAnyByProfile(GetWorld(), OverlapLocation, OverlapCapsuleRadius, OverlapCapsuleHalfHeight, FQuat::Identity, CollisionProfilePawn, QueryParams, bIsDebugEnabled, DrawTime))
 	{
 		return false;
 	}
