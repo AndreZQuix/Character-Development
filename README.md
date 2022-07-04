@@ -18,5 +18,8 @@ Sprinting with stamina:
 Out of stamina:
 ![OutOfStamina](https://user-images.githubusercontent.com/82176741/176279692-d8fc65bb-732f-4307-b821-4386366cf576.png)
 
-Swimming:
-Will be updated
+Swimming:  
+Will be updated 
+   
+Mantling:  
+Will be updated  
