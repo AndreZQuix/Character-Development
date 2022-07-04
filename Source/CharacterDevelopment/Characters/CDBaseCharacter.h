@@ -104,6 +104,9 @@ protected:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "Character | IK settings", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float IKInterpSpeed = 20.0f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | Movement | Mantling")
+	class UAnimMontage* HighMantleMontage;
+
 private:
 	bool bIsSprintRequested = false;
 

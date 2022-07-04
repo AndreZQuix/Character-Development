@@ -39,6 +39,7 @@ void ACDBaseCharacter::Mantle()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Detected ledge"));
 		CDBaseCharacterMovementComponent->StartMantle(LedgeDescription);
+		PlayAnimMontage(HighMantleMontage);
 	}
 }
 
