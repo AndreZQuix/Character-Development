@@ -67,14 +67,15 @@ bool ULedgeDetectorComponent::DetectLedge(OUT FLedgeDescription& LedgeDescriptio
 	// Overlap check
 	float OverlapCapsuleRadius = CapsuleComponent->GetScaledCapsuleRadius();
 	float OverlapCapsuleHalfHeight = CapsuleComponent->GetScaledCapsuleHalfHeight();
-	FVector OverlapLocation = DownwardCheckHitResult.ImpactPoint + OverlapCapsuleRadius;
+	float OverlapCapsuleFloorOffset = 2.0f;
+	FVector OverlapLocation = DownwardCheckHitResult.ImpactPoint + (OverlapCapsuleHalfHeight + OverlapCapsuleFloorOffset) * FVector::UpVector;
 	
 	if (CDTraceUtils::OverlapCapsuleAnyByProfile(GetWorld(), OverlapLocation, OverlapCapsuleRadius, OverlapCapsuleHalfHeight, FQuat::Identity, CollisionProfilePawn, QueryParams, bIsDebugEnabled, DrawTime))
 	{
 		return false;
 	}
 
-	LedgeDescription.Location = DownwardCheckHitResult.ImpactPoint;
+	LedgeDescription.Location = OverlapLocation;
 	LedgeDescription.Rotation = (ForwardCheckHitResult.ImpactNormal * FVector(-1.0f, -1.0f, 0.0f)).ToOrientationRotator();
 	return true;
 }

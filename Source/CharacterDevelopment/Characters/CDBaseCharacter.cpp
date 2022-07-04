@@ -34,9 +34,11 @@ void ACDBaseCharacter::Tick(float DeltaTime)
 void ACDBaseCharacter::Mantle()
 {
 	FLedgeDescription LedgeDescription;
+	UE_LOG(LogTemp, Warning, TEXT("DETECTING ledge"));
 	if (LedgeDetectorComponent->DetectLedge(LedgeDescription))
 	{
-		// TODO activate mantling
+		UE_LOG(LogTemp, Warning, TEXT("Detected ledge"));
+		CDBaseCharacterMovementComponent->StartMantle(LedgeDescription);
 	}
 }
 
@@ -224,12 +226,7 @@ void ACDBaseCharacter::OnSprintEnd_Implementation()
 
 bool ACDBaseCharacter::CanJumpInternal_Implementation() const
 {
-	if (CDBaseCharacterMovementComponent->IsOutOfStamina() || CDBaseCharacterMovementComponent->IsProning())
-	{
-		return false;
-	}
-
-	if (bIsCrouched && CanStandUpWhileCrouch())
+	if (bIsCrouched && CanStandUpWhileCrouch() && !CDBaseCharacterMovementComponent->IsOutOfStamina() && !CDBaseCharacterMovementComponent->IsProning() && !CDBaseCharacterMovementComponent->IsMantling())
 	{
 		return true;
 	}
