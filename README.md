@@ -20,6 +20,5 @@ Out of stamina:
 
 Swimming:  
 Will be updated 
-   
 Mantling:  
 Will be updated  
