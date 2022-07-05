@@ -35,7 +35,6 @@ void ACDBaseCharacter::Tick(float DeltaTime)
 void ACDBaseCharacter::Mantle()
 {
 	FLedgeDescription LedgeDescription;
-	UE_LOG(LogTemp, Warning, TEXT("DETECTING ledge"));
 	if (LedgeDetectorComponent->DetectLedge(LedgeDescription))
 	{
 		FMantlingMovementParameters MantlingParameters;
@@ -50,10 +49,12 @@ void ACDBaseCharacter::Mantle()
 		HighMantleSettings.MantlingCurve->GetTimeRange(MinRange, MaxRange);
 		MantlingParameters.Duration = MaxRange - MinRange;
 		float MantlingHeight = (MantlingParameters.TargetLocation - MantlingParameters.InitialLocation).Z;
-		/*float StartTime = HighMantleSettings.MaxHeightStartTime + (MantlingHeight - HighMantleSettings.MinHeight) / (HighMantleSettings.MaxHeight - HighMantleSettings.MinHeight) * (HighMantleSettings.MaxHeightStartTime - HighMantleSettings.MinHeightStartTime);*/
 
 		FVector2D SourceRange(HighMantleSettings.MinHeight, HighMantleSettings.MaxHeight);
 		FVector2D TargetRange(HighMantleSettings.MinHeightStartTime, HighMantleSettings.MaxHeightStartTime);
+
+		MantlingParameters.InitialAnimationLocation = MantlingParameters.TargetLocation - HighMantleSettings.AnimationCorrectionZ * FVector::UpVector + HighMantleSettings.AnimationCorrectionXY * LedgeDescription.LedgeNormal;
+
 		MantlingParameters.StartTime = FMath::GetMappedRangeValueClamped(SourceRange, TargetRange, MantlingHeight);
 
 		CDBaseCharacterMovementComponent->StartMantle(MantlingParameters);

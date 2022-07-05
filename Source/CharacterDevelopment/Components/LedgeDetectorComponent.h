@@ -15,6 +15,9 @@ struct FLedgeDescription
 	FVector Location;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ledge description")
+	FVector LedgeNormal;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ledge description")
 	FRotator Rotation;
 };
 
