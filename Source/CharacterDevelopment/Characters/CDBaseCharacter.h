@@ -137,22 +137,29 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | Movement | Mantling")
 	FMantlingSettings HighMantleSettings;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | Movement | Mantling")
+	FMantlingSettings LowMantleSettings;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | Movement | Mantling", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float LowMantleMaxHeight = 125.0f;
+
 private:
+	void TryChangeSprintState();
 	bool bIsSprintRequested = false;
 
+	void UpdateStamina(float DeltaTime);
 	float CurrentStamina = 0.0f;
 
-	void TryChangeSprintState();
-	void UpdateStamina(float DeltaTime);
+	const FMantlingSettings& GetMantlingSettings(float LedgeHeight);
 
 	float GetIKOffsetForASocket(const FName& SocketName);
-
 	void UpdateIKSettings(float DeltaTime);
 
 	float IKLeftFootOffset = 0.0f;
 	float IKRightFootOffset = 0.0f;
 	float IKPelvisOffset = 0.0f;
 	float IKTraceDistance = 50.0f;
-	
+
 	float PronePelvisOffset = -60.0f;
+
 };
