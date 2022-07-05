@@ -26,12 +26,12 @@ bool ULedgeDetectorComponent::DetectLedge(OUT FLedgeDescription& LedgeDescriptio
 	QueryParams.bTraceComplex = true;
 	QueryParams.AddIgnoredActor(GetOwner());
 
-#if ENABLE_DRAW_DEBUG
+//#if ENABLE_DRAW_DEBUG
 	UCDDebugSubsystem* DebugSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UCDDebugSubsystem>();
 	bool bIsDebugEnabled = DebugSubsystem->IsCategoryEnabled(DebugCategoryLedgeDetection);
-#else
-	bool bIsDebugEnabled = false;
-#endif
+//#else
+//	bool bIsDebugEnabled = false;
+//#endif
 
 	float DrawTime = 2.0f;
 	float BottomZOffset = 2.0f;

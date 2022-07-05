@@ -86,9 +86,9 @@ protected:
 	float SwimmingCapsuleHalfHeight = 40.0f;
 	
 private:
-	bool bIsSprinting;
-	bool bIsOutOfStamina;
-	bool bIsProned;
+	bool bIsSprinting = false;
+	bool bIsOutOfStamina = false;
+	bool bIsProned = false;
 
 	FMantlingMovementParameters CurrentMantlingParameters;
 
