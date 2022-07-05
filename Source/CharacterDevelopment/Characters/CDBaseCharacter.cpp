@@ -38,6 +38,11 @@ void ACDBaseCharacter::Mantle()
 	if (LedgeDetectorComponent->DetectLedge(LedgeDescription) && !CDBaseCharacterMovementComponent->IsMantling()
 		&& !CDBaseCharacterMovementComponent->IsProning())
 	{
+		if (CDBaseCharacterMovementComponent->IsCrouching())
+		{
+			UnCrouch();
+		}
+
 		FMantlingMovementParameters MantlingParameters;
 		MantlingParameters.InitialLocation = GetActorLocation();
 		MantlingParameters.InitialRotation = GetActorRotation();
