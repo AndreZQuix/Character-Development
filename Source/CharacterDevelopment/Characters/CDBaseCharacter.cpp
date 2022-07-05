@@ -35,7 +35,8 @@ void ACDBaseCharacter::Tick(float DeltaTime)
 void ACDBaseCharacter::Mantle()
 {
 	FLedgeDescription LedgeDescription;
-	if (LedgeDetectorComponent->DetectLedge(LedgeDescription) && !GetBaseCharacterMovementComponent()->IsMantling())
+	if (LedgeDetectorComponent->DetectLedge(LedgeDescription) && !CDBaseCharacterMovementComponent->IsMantling()
+		&& !CDBaseCharacterMovementComponent->IsProning())
 	{
 		FMantlingMovementParameters MantlingParameters;
 		MantlingParameters.InitialLocation = GetActorLocation();
@@ -148,7 +149,9 @@ void ACDBaseCharacter::StopSprint()
 
 void ACDBaseCharacter::TryChangeSprintState()
 {
-	if (bIsSprintRequested && !CDBaseCharacterMovementComponent->IsOutOfStamina() && !CDBaseCharacterMovementComponent->IsSprinting() && CanStandUpWhileCrouch())
+	if (bIsSprintRequested && !CDBaseCharacterMovementComponent->IsOutOfStamina() 
+		&& !CDBaseCharacterMovementComponent->IsSprinting() && CanStandUpWhileCrouch()
+		&& !CDBaseCharacterMovementComponent->IsProning() && !CDBaseCharacterMovementComponent->IsMantling())
 	{
 		CDBaseCharacterMovementComponent->StartSprint();
 		OnSprintStart();
@@ -258,10 +261,17 @@ void ACDBaseCharacter::OnSprintEnd_Implementation()
 
 bool ACDBaseCharacter::CanJumpInternal_Implementation() const
 {
-	if (bIsCrouched && CanStandUpWhileCrouch() && !CDBaseCharacterMovementComponent->IsOutOfStamina() && !CDBaseCharacterMovementComponent->IsProning() && !CDBaseCharacterMovementComponent->IsMantling())
+	bool bResult = Super::CanJumpInternal_Implementation();
+
+	if (bIsCrouched && CanStandUpWhileCrouch() && !CDBaseCharacterMovementComponent->IsOutOfStamina())
 	{
-		return true;
+		bResult = true;
 	}
 
-	return Super::CanJumpInternal_Implementation();
+	if (CDBaseCharacterMovementComponent->IsProning() || CDBaseCharacterMovementComponent->IsMantling())
+	{
+		bResult = false;
+	}
+
+	return bResult;
 }
